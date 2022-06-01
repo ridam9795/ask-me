@@ -1,0 +1,17 @@
+.leftPane {
+    width: 20%;
+    margin-left: 10%;
+
+}
+
+.rightPane {
+    width: 40%;
+}
+
+* {
+    background-color: #0c0d0c;
+}
+
+.content {
+    display: flex;
+}
