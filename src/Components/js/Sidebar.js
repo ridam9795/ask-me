@@ -1,6 +1,6 @@
 import React from 'react'
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
-
+import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 
 
@@ -17,7 +17,9 @@ function Sidebar() {
   <Menu iconShape="square">
       {sidePanelList.map((item,index)=>{
           return (
-       <MenuItem key={index}>{item}</MenuItem>
+               <MenuItem ><Link to={`/topic/${item}`}>{item}</Link></MenuItem>
+            
+    
 
           )
       })}

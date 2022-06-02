@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Avatar } from 'react-profile-avatar'
 import './css/CreatePost.css';
 import ModalContent from './js/ModalContent';
 function CreatePost(props) {
-      console.log("isPost: ",props.isPost)
   return (
     <div className='createPost' >
         <div style={{height:'40px',display:'flex',width:'100%',backgroundColor:'#1d1d1d'}}>

@@ -5,8 +5,8 @@
 .image {
     position: relative;
     margin-left: 4%;
-    width: 30px;
-    height: 30px !important;
+    width: 300px;
+        height: 40px !important;
 }
 
 .nav {
@@ -34,10 +34,14 @@
 .Input {
     margin-left: 4%;
     width: 500px;
-    padding: 5px;
-    font-size: 15px;
+    padding: 3px;
+        padding-left: 25px;
+        font-size: 15px;
     margin-bottom: 10px;
     color: white;
+    background-color: #0c0d0c;
+        border: 1px solid white;
+        border-radius: 30px;
     }
     
 .siteName {
@@ -46,6 +50,8 @@
     font-size: 25px;
     margin-top: -3px;
     font-weight: 800;
+        margin-left: -50px;
+            padding-right: 40px;
 }
 .modalHeader {
 
@@ -63,4 +69,43 @@
 Tab:active {
     border-bottom: 3px solid red;
 }
-        
+image:hover {
+    background-color: red;
+}
+
+.tooltip {
+    margin: 10px 20px 10px 10px;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: auto;
+    padding: 15px;
+    background-color: #1d1d1d;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 0;
+    margin-top: -60px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    font-size: small;
+}
+
+.tooltip .hometext {
+    visibility: hidden;
+    position: absolute;
+    color: #fff;
+    margin-left: -30px;
+    margin-top: -25px;
+    font-size: small;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.tooltip:hover .hometext {
+    visibility: visible;
+
+}

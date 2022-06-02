@@ -1,0 +1,9 @@
+.categoryContent {
+    position: absolute;
+    background-color: #dde9ed;
+    color: red;
+    margin-left: 35%;
+    width: 60%;
+    height: 60%;
+
+}

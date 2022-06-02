@@ -3,9 +3,10 @@ import './App.css';
 import CreatePost from './Components/CreatePost';
 import Header from './Components/js/Header';
 import Sidebar from './Components/js/Sidebar';
+import {BrowserRouter as Router,Routes,Route} from 'react-router-dom';
+import CategoryPage from './Components/js/CategoryPage';
 
 function App() {
-    let subtitle;
 
     const [modalIsOpen, setIsOpen] = useState(false);
       const [isPost,setIsPost]=useState(false);
@@ -30,20 +31,25 @@ function App() {
     setIsOpen(false);
   }
   return (
-    <div >
+    <Router >
       <Header openModal={openModal} afterOpenModal={afterOpenModal} closeModal={closeModal}  modalIsOpen={modalIsOpen} isPost={isPost} setPost={setIsPost} />
       <div className='content'>
       <div className='leftPane'>
           <Sidebar />
       </div>
       <div className='rightPane'>
-             <CreatePost openModal={openModal} afterOpenModal={afterOpenModal} closeModal={closeModal} isPost={isPost} setPost={setIsPost} />
+             
+               <Routes>
+                 <Route path="/" exact element={<CreatePost openModal={openModal} afterOpenModal={afterOpenModal} closeModal={closeModal} isPost={isPost} setPost={setIsPost} />} />
+                 <Route path="/topic/:category" element={<CategoryPage /> } />
+               </Routes>
+             
       </div>
       </div>
 
     
       
-    </div>
+    </Router>
   );
 }
 
