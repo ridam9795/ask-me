@@ -17,6 +17,7 @@
     "react-avatar": "^5.0.0",
     "react-dom": "^18.1.0",
     "react-icons": "^4.4.0",
+    "react-modal": "^3.15.1",
     "react-nice-avatar": "^1.2.4",
     "react-pro-sidebar": "^0.7.1",
     "react-profile-avatar": "^1.0.0",

@@ -1,17 +1,20 @@
 .leftPane {
     width: 20%;
     margin-left: 10%;
+        z-index: 0;
+            position: fixed;
+            margin-top: 8%;
 
 }
 
 .rightPane {
     width: 40%;
+                margin-top: 8%;
 }
 
-* {
-    background-color: #0c0d0c;
-}
 
 .content {
     display: flex;
+    background-color: #0c0d0c;
+        height: 2000px;
 }

@@ -1,12 +1,12 @@
 .createPost {
-    position: relative;
-    width: 100%;
+    position: absolute;
+        width: 40%;
     background-color: #1d1d1d;
-    margin-top: 20px;
-    height: 15%;
+        height: 80px;
     color: blanchedalmond;
     padding: 10px 10px 0px 10px;
-    z-index: 100;
+    margin-left: 35%;
+        border-radius: 10px;
 }
 
 .buttons {
@@ -23,6 +23,7 @@
     border-radius: 10px;
     margin-left: 5px;
     background-color: #1d1d1d;
+    cursor: pointer;
 }
 
 .button:hover {

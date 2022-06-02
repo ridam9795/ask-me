@@ -1,8 +1,9 @@
-import {  AvatarGroup, Box, Button } from '@chakra-ui/react';
-import React from 'react'
+import React, { useState } from 'react'
 import { Avatar } from 'react-profile-avatar'
 import './css/CreatePost.css';
-function CreatePost() {
+import ModalContent from './js/ModalContent';
+function CreatePost(props) {
+      console.log("isPost: ",props.isPost)
   return (
     <div className='createPost' >
         <div style={{height:'40px',display:'flex',width:'100%',backgroundColor:'#1d1d1d'}}>
@@ -14,10 +15,12 @@ function CreatePost() {
                       />       <div className='InputDiv'>What do you want to ask or share?</div>
         </div>
         <div className='buttons'>
-            <p className='button'>Ask</p>
+            <p className='button' onClick={()=>props.openModal("ask")} >Ask</p>
           <p className='button'>Answer</p>
 
-            <p className='button'>Post</p>
+            <p className='button' onClick={()=>props.openModal("post")}  >Post</p>
+                   <ModalContent content={props}/> 
+
 
             
 
