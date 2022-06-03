@@ -6,11 +6,18 @@ import 'react-profile-avatar/dist/index.css'
 import {BellIcon, EditIcon} from '@chakra-ui/icons'
 import '../css/Header.css';
 import ModalContent from './ModalContent';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/react'
 
-import HomeIcon from '@mui/icons-material/Home';function Header(props) {
+import HomeIcon from '@mui/icons-material/Home';
+
+function Header(props) {
+ let activeStyle = {
+    borderBottom:"3px solid red",
+  };
+
+
   return (
             <div className='navbar'>
               
@@ -18,9 +25,15 @@ import HomeIcon from '@mui/icons-material/Home';function Header(props) {
               <Link to="/">  <p className='siteName'> ASK ME   </p></Link>
                 
                  
-              <Link to="/" className="tooltip" > <HomeIcon style={{color:'white',fontSize:'30px'}} /><span className=' hometext' >Home</span></Link>
-                    <Link to="/answer" className="tooltip"><EditIcon color={'white'} boxSize={'25px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/><span className='tooltiptext' >Answer</span></Link>
-                 <Link to="/notifications" className="tooltip"><BellIcon  color={'white'} boxSize={'25px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/><span className='tooltiptext' >Notifications</span></Link>
+              <NavLink to="/" style={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }  className="tooltip"> <HomeIcon style={{color:'white',fontSize:'30px'}} /><span className=' hometext' >Home</span></NavLink>
+                    <NavLink to="/answer" style={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }  className="tooltip"><EditIcon color={'white'} boxSize={'25px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/><span className='tooltiptext' >Answer</span></NavLink>
+                 <NavLink to="/notifications" style={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }  className="tooltip"><BellIcon  color={'white'} boxSize={'25px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/><span className='tooltiptext' >Notifications</span></NavLink>
                   
                    {/* <Link to="/" className='image'><img src={home} alt="home" /></Link>   */}
                      {/* <EditIcon color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/> */}

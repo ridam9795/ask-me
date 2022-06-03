@@ -1,5 +1,6 @@
 import React from 'react'
 import { Avatar } from 'react-profile-avatar'
+import { Link } from 'react-router-dom';
 import './css/CreatePost.css';
 import ModalContent from './js/ModalContent';
 function CreatePost(props) {
@@ -15,7 +16,7 @@ function CreatePost(props) {
         </div>
         <div className='buttons'>
             <p className='button' onClick={()=>props.openModal("ask")} >Ask</p>
-          <p className='button'>Answer</p>
+          <p className='button'><Link to="/answer" > Answer</Link></p>
 
             <p className='button' onClick={()=>props.openModal("post")}  >Post</p>
                    <ModalContent content={props}/> 
