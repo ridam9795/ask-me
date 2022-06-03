@@ -53,12 +53,7 @@
         margin-left: -50px;
             padding-right: 40px;
 }
-.modalHeader {
 
-    display: flex;
-    background-color: #181818;
-    color: white;
-}
 
 .tab {
     width: 50%;

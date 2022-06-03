@@ -1,15 +1,10 @@
-import {     Button } from '@chakra-ui/react'
+import {     Avatar, Button } from '@chakra-ui/react'
 import React from 'react';
-import home from '../../../src/home.png'
-import { Avatar } from 'react-profile-avatar'
 import 'react-profile-avatar/dist/index.css'
 import {BellIcon, EditIcon} from '@chakra-ui/icons'
 import '../css/Header.css';
 import ModalContent from './ModalContent';
 import { Link, NavLink } from 'react-router-dom';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import { Tooltip } from '@chakra-ui/react'
-
 import HomeIcon from '@mui/icons-material/Home';
 
 function Header(props) {
@@ -45,10 +40,10 @@ function Header(props) {
      
         
                     <Avatar 
-                        name={'Ridam Nagar'}
-                        colour={'#1d1d1d'}
-                        className="avatar"
-                        style={{marginLeft:'120px',marginTop:'5px'}}
+                    src='https://bit.ly/broken-link'
+                    // name={"ridam Nagar"}
+                        size={'md'}
+                        ml={'80px'}
                       />  
 
              </div>

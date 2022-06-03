@@ -1,0 +1,17 @@
+.modalHeader {
+
+    display: flex;
+    background-color: #181818;
+    color: white;
+
+}
+
+.modalBody {
+    height: 100px;
+    position: relative;
+}
+
+.modalFooter {
+    position: fixed;
+    margin-top: 500px;
+}
