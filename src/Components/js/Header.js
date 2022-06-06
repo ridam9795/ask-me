@@ -6,11 +6,14 @@ import '../css/Header.css';
 import ModalContent from './ModalContent';
 import { Link, NavLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
+import { SiteState } from '../../Context/AskMeProvider';
 
 function Header(props) {
  let activeStyle = {
     borderBottom:"3px solid red",
   };
+        const {modalIsOpen, setIsOpen,isPost,setIsPost,openModal,closeModal}=SiteState();
+
 
 
   return (
@@ -34,9 +37,9 @@ function Header(props) {
                      {/* <EditIcon color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/> */}
                      {/* <BellIcon  color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/>                 */}
                      <input type="text" className='Input' placeholder='search'/>
-                    <Button colorScheme={'red'} ml={'5%'} height={'8'} mt={'2'} onClick={()=>props.openModal("ask")} >Ask Question</Button>
+                    <Button colorScheme={'red'} ml={'5%'} height={'8'} mt={'2'} onClick={()=>openModal("ask")} >Ask Question</Button>
                
-       <ModalContent content={props}/> 
+       <ModalContent /> 
      
         
                     <Avatar 
