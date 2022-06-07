@@ -1,0 +1,17 @@
+.boxCard {
+
+    position: relative;
+    margin: 10px;
+    width: 90%;
+    min-height: 60px;
+    height: auto;
+    background-color: white;
+    margin-left: 20px;
+    padding: 10px;
+    border-radius: 10px;
+
+}
+
+.comment {
+    display: flex;
+}
