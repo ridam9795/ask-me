@@ -7,7 +7,8 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentBoxCard from './CommentBoxCard';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-function Postcard() {
+import { SiteState } from '../../Context/AskMeProvider';
+function Postcard({postValue}) {
   const [liked,setLiked]=useState(false);
   const [unliked,setUnliked]=useState(false);
   const [visibility,setVisibility]=useState(false);
@@ -15,6 +16,7 @@ function Postcard() {
   const [commentList,setCommentList]=useState([]);
   const [itemToShow,setItemToShow]=useState(3);
   const [showCommentVisibility,setShowCommnentVisibility ]=useState(true);
+      const {postContent,setPostContent,questionContent,setQuestionContent}=SiteState();
 
    useEffect(()=>{
      let len=commentList.length;
@@ -35,7 +37,7 @@ function Postcard() {
   }
   const handleShowComment=()=>{
     let len=commentList.length;
-   if(itemToShow+1>=len){
+   if(itemToShow+3>=len){
      setShowCommnentVisibility(false)
    }
 setItemToShow(itemToShow+3)
@@ -68,7 +70,7 @@ setItemToShow(itemToShow+3)
             </div>
         <CloseIcon />
         </div>
-        <div className='postCardBody' >dsd</div>
+        <div className='postCardBody' dangerouslySetInnerHTML={{__html:postValue}} ></div>
         <div className='postCardFooter' >
           <ThumbUpIcon style={{color:liked?'green':'4fa8db'}}  onClick={handleLike} />
           <ThumbDownIcon style={{ marginLeft:'25px',color:unliked?'#eb332d':'4fa8db' }}  onClick={handleUnLike}/>
@@ -85,7 +87,7 @@ setItemToShow(itemToShow+3)
                      return  <CommentBoxCard key={index} comment={item} setItemToShow={setItemToShow} />
                   })
                 }
-                     {commentList.length>3 && showCommentVisibility ?(<Button colorScheme='blue' ml={'30%'} onClick={handleShowComment } ><ArrowDownwardIcon />Show More Comments </Button>):(<></>) }   
+                     {commentList.length>3 && showCommentVisibility ?(<Button colorScheme='blue' ml={'30%'} onClick={handleShowComment } ><ArrowDownwardIcon />View More Comments </Button>):(<></>) }   
 
 
         </div>:(<></>)}

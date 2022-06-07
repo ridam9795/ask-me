@@ -1,6 +1,6 @@
 .postCard {
     background-color: #1d1d1d;
-    height: 320px;
+        height: auto;
     width: 100%;
     margin-left: 83%;
     position: relative;
@@ -8,6 +8,7 @@
     border-radius: 10px;
     color: white;
     padding: 10px;
+    min-height: 100px;
 }
 .commentSection {
     background-color: #1d1d1d;
@@ -17,6 +18,7 @@
     margin-left: 83%;
     padding: 10px;
     margin-top: -10px;
+border-radius: 0px 0px 10px 10px;
 }
 
 .commentBox {
@@ -42,16 +44,18 @@
 
     height: 60%;
     margin-top: 10px;
+    padding: 20px;
 
 }
 
 .postCardFooter {
-    position: absolute;
-        margin-top: 25px;
+    position: sticky;
     height: 50px;
     width: 96%;
     display: flex;
         margin-left: 20px;
+        margin-top: 10px;
+            padding-top: 10px;
     
 }
     

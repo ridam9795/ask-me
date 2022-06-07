@@ -9,7 +9,7 @@ import { SiteState } from './Context/AskMeProvider';
 import Post from './Components/js/Post';
 function App() {
 
-      const {content}=SiteState();
+      const {postContent,setPostContent,questionContent,setQuestionContent}=SiteState('');
 
   return (
     <Router >
@@ -28,7 +28,7 @@ function App() {
                  <Route path="/topic/:category" element={<CategoryPage /> } />
                </Routes>
                
-                <div dangerouslySetInnerHTML={{__html:content}} />
+            
              
       </div>
                                       

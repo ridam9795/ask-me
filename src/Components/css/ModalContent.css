@@ -15,3 +15,25 @@
     position: fixed;
     margin-top: 500px;
 }
+.edit {
+    height: 150px;
+    width: 100%;
+    color: white !important;
+    background-color: #1d1d1d;
+}
+
+.toolbar {
+    background-color: #1d1d1d;
+}
+
+.RichTextEditor__root___2QXK- {
+    background-color: #1d1d1d !important;
+}
+
+.InputPopover__input___264Za {
+    color: black;
+}
+
+span {
+    color: #65c981 !important;
+}
