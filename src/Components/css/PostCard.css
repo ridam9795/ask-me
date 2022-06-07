@@ -9,16 +9,34 @@
     color: white;
     padding: 10px;
 }
+.commentSection {
+    background-color: #f5eeed;
+    height: 100px;
+    width: 100%;
+    position: relative;
+    margin-left: 83%;
+    margin-top: -10px;
+}
 
+.commentBox {
+
+    background-color: #1d1d1d;
+    margin: 10px;
+    width: 96%;
+    height: 40px;
+    border-radius: 30px;
+    color: white;
+    padding: 10px;
+    padding-left: 20px;
+}
 .postCardHeader {
     position: relative;
-    background-color: aqua;
     height: 50px;
+    display: flex;
 }
 
 .postCardBody {
 
-    background-color: red;
     height: 60%;
     margin-top: 10px;
 
@@ -26,9 +44,11 @@
 
 .postCardFooter {
     position: absolute;
-    margin-top: 10px;
+        margin-top: 25px;
     height: 50px;
     width: 96%;
-
-    background-color: green;
+    display: flex;
+        margin-left: 20px;
+    
 }
+    
