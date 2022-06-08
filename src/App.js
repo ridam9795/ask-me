@@ -1,15 +1,12 @@
-import { useMemo, useRef, useState } from 'react';
 import './App.css';
-import CreatePost from './Components/CreatePost';
 import Header from './Components/js/Header';
 import Sidebar from './Components/js/Sidebar';
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom';
 import CategoryPage from './Components/js/CategoryPage';
-import { SiteState } from './Context/AskMeProvider';
 import Post from './Components/js/Post';
+import Question from './Components/js/Question';
 function App() {
 
-      const {postContent,setPostContent,questionContent,setQuestionContent}=SiteState('');
 
   return (
     <Router >
@@ -26,6 +23,7 @@ function App() {
                <Routes>
                  <Route path="/" exact element={<Post   />} />
                  <Route path="/topic/:category" element={<CategoryPage /> } />
+                 <Route path="/answer" element={<Question /> } />
                </Routes>
                
             

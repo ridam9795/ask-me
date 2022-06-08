@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react'
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Button } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react'
 import {    Box } from '@chakra-ui/react'
 import Modal from 'react-modal';
 import { CloseIcon } from '@chakra-ui/icons';
 import '../css/ModalContent.css';
 import { SiteState } from '../../Context/AskMeProvider';
-import RichTextEditor, { stateToHTML } from "react-rte";
+import RichTextEditor from "react-rte";
 
 const customStyles = {
   content: {
@@ -24,7 +24,7 @@ const customStyles = {
   },
 };
 function ModalContent(props) {
-      const {postList,setPostList,modalIsOpen, setIsOpen,isPost,setIsPost,openModal,closeModal,postContent,setPostContent,questionContent,setQuestionContent}=SiteState();
+      const {postList,setPostList,questionList,setQuestionList,modalIsOpen,isPost,closeModal,postContent,setPostContent,questionContent,setQuestionContent}=SiteState();
       const [question,setQuestion]=useState(RichTextEditor.createEmptyValue());
             const [post,setPost]=useState(RichTextEditor.createEmptyValue());
 
@@ -42,12 +42,16 @@ const  onAddQuestion = value => {
 
   const addQuestion=(e)=>{
         e.preventDefault();
+        setQuestionList([...questionList,questionContent ])
+        setQuestionContent("");
+        setQuestion(RichTextEditor.createEmptyValue());
         closeModal();
   }
   const addPost=(e)=>{
     e.preventDefault();
         setPostList([...postList,postContent])
 setPostContent("")
+setPost(RichTextEditor.createEmptyValue())
         closeModal();
   }
   
@@ -74,7 +78,6 @@ setPostContent("")
                                editorClassName="edit"
                             toolbarClassName="toolbar"
                               value={question} onChange={onAddQuestion} />
-                      {/* <Textarea h={'20px'} mb={'153px'} w={'102%'} placeholder="Start your Question with 'What','How','Why', etc. "></Textarea> */}
                         <hr />
                         <Button colorScheme={'#1d1d1d'} onClick={closeModal} color={'white'} ml={'67%'} mr={'15px'} mt={'10px'} borderRadius={'30px'} >Cancel</Button>
                         <Button colorScheme={'blue'} mt={'10px'} borderRadius={'30px'} onClick={addQuestion} >Add question</Button>
@@ -84,7 +87,6 @@ setPostContent("")
                                editorClassName="edit"
                             toolbarClassName="toolbar"
                               value={post} onChange={onAddPost} />
-{/* <Textarea h={'193px'} mb={'40px'} placeholder="Say Something..."></Textarea> */}
                         <hr />
                         <Button colorScheme={'#1d1d1d'} onClick={closeModal} color={'white'} ml={'70%'} mr={'15px'} mt={'10px'} borderRadius={'30px'} >Cancel</Button>
                         <Button colorScheme={'blue'} mt={'10px'} borderRadius={'30px'} onClick={addPost}  >Add Post</Button>

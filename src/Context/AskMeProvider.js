@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import RichTextEditor, { stateToHTML } from "react-rte";
+import RichTextEditor from "react-rte";
 
 const SiteContext=createContext();
 const  AskMeProvider=({children})=> {
@@ -10,9 +10,10 @@ const  AskMeProvider=({children})=> {
             const [questionContent,setQuestionContent]=useState('')
             const [postContent,setPostContent]=useState('');
             const [postList,setPostList]=useState([]);
+            const [questionList,setQuestionList]=useState([]);
+
 
  function openModal(tab) {
-    console.log("tab>>>>>>",tab)
     if(tab==="ask"){
       setIsPost(false);
     }else{
@@ -43,7 +44,9 @@ const  AskMeProvider=({children})=> {
         postContent,
         setPostContent,
         postList,
-        setPostList
+        setPostList,
+        questionList,
+        setQuestionList
     }}   >
 
         {children}

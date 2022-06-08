@@ -1,12 +1,12 @@
-import { Avatar, Button } from '@chakra-ui/react'
+import { Avatar,  Button,  Textarea } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import '../css/PostCard.css'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import CommentIcon from '@mui/icons-material/Comment';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import CommentBoxCard from './CommentBoxCard';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-function Postcard({postValue}) {
+function QuestionCard({question}) {
   const [liked,setLiked]=useState(false);
   const [unliked,setUnliked]=useState(false);
   const [visibility,setVisibility]=useState(false);
@@ -14,7 +14,6 @@ function Postcard({postValue}) {
   const [commentList,setCommentList]=useState([]);
   const [itemToShow,setItemToShow]=useState(3);
   const [showCommentVisibility,setShowCommnentVisibility ]=useState(true);
-
    useEffect(()=>{
      let len=commentList.length;
        if(itemToShow<len){
@@ -62,18 +61,18 @@ setItemToShow(itemToShow+3)
                 <p style={{fontSize:'12px'}} >Software Engineer</p>
             </div>
         </div>
-        <div className='postCardBody' dangerouslySetInnerHTML={{__html:postValue}} ></div>
+        <div className='postCardBody' dangerouslySetInnerHTML={{__html:question}} ></div>
         <div className='postCardFooter' >
           <ThumbUpIcon style={{color:liked?'green':'4fa8db'}}  onClick={handleLike} />
           <ThumbDownIcon style={{ marginLeft:'25px',color:unliked?'#eb332d':'4fa8db' }}  onClick={handleUnLike}/>
 
-          <CommentIcon style={{ marginLeft:'25px' }} onClick={()=>{setVisibility(!visibility)}} />
+          <QuestionAnswerIcon style={{ marginLeft:'25px' }} onClick={()=>{setVisibility(!visibility)}} />
            
         </div>
       </div>
       <div>
         { visibility? <div className='commentSection'>
-               <input type="text" className='commentBox' placeholder='Add Comment...' value={comment} onChange={handleComment} onKeyUpCapture={handleSubmit} />
+               <Textarea type="text" w={'95%'} color={'white'} className='commentBox' placeholder='Add Answer' value={comment} onChange={handleComment} onKeyUpCapture={handleSubmit} />
                 {
                   commentList.slice(0,itemToShow).map((item,index)=>{
                      return  <CommentBoxCard key={index} comment={item} setItemToShow={setItemToShow} />
@@ -88,4 +87,4 @@ setItemToShow(itemToShow+3)
   )
 }
 
-export default Postcard
+export default QuestionCard
