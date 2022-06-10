@@ -1,20 +1,37 @@
 import {     Avatar, Button } from '@chakra-ui/react'
-import React from 'react';
+import React, { useState } from 'react';
 import 'react-profile-avatar/dist/index.css'
-import {BellIcon, EditIcon} from '@chakra-ui/icons'
+import {BellIcon, ChevronDownIcon, EditIcon} from '@chakra-ui/icons'
 import '../css/Header.css';
 import ModalContent from './ModalContent';
 import { Link, NavLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import { SiteState } from '../../Context/AskMeProvider';
-
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+} from '@chakra-ui/react'
+import Auth from './Auth';
 function Header(props) {
  let activeStyle = {
     borderBottom:"3px solid red",
   };
-        const {modalIsOpen, setIsOpen,isPost,setIsPost,openModal,closeModal}=SiteState();
+        const {openModal}=SiteState();
+        const [signedIn,setSignedIn]=useState(false);
+        const [openAuth,setOpenAuth]=useState(false);
+   
+ function openAuthModal() {
+    
+    setOpenAuth(true);
+  }
 
 
+  function closeAuthModal() {
+    setOpenAuth(false);
+  }
 
   return (
             <div className='navbar'>
@@ -37,17 +54,30 @@ function Header(props) {
                      {/* <EditIcon color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/> */}
                      {/* <BellIcon  color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/>                 */}
                      <input type="text" className='Input' placeholder='search'/>
-                    <Button colorScheme={'red'} ml={'5%'} height={'8'} mt={'2'} onClick={()=>openModal("ask")} >Ask Question</Button>
-               
+                    <Button colorScheme={'red'} ml={'2%'} height={'8'} mt={'2'} onClick={openModal} >Ask Question</Button>
        <ModalContent /> 
+       {signedIn?( <Menu w={'10px'} ml={'100px'} pl={'20%'}>
+  <MenuButton w={'60px'} ml={'5%'} rightIcon={<ChevronDownIcon />}>
+     <Avatar 
+          src='https://bit.ly/broken-link'
+          // name={"ridam Nagar"}
+              size={'md'}
+              
+            />  
+  </MenuButton>
+  <MenuList >
+    <MenuItem fontWeight={'800'} >ridamnagar11@gmail.com</MenuItem>
+    <MenuDivider />
+    <MenuItem fontWeight={'500'} >Profile</MenuItem>
+    <MenuItem fontWeight={'500'}>Logout</MenuItem>
+   
+  </MenuList>
+</Menu>):(<><Button ml={'2%'} mt={'2'} height={'8'} colorScheme={'green'} onClick={openAuthModal}>Sign in or Create account</Button>               <Auth openAuth={openAuth} setOpenAuth={setOpenAuth} closeAuthModal={closeAuthModal}/>
+</>)}
      
         
-                    <Avatar 
-                    src='https://bit.ly/broken-link'
-                    // name={"ridam Nagar"}
-                        size={'md'}
-                        ml={'80px'}
-                      />  
+                   
+ 
 
              </div>
    
