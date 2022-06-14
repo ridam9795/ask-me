@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Text, Input } from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Text, Input, Img } from '@chakra-ui/react'
 import {    Box } from '@chakra-ui/react'
 import Modal from 'react-modal';
 import '../css/ModalContent.css';
 import { FormLabel } from '@chakra-ui/core';
+import googleIcon from '../../../src/googleIcon.png'
+
 const customStyles = {
   content: {
     top: '56%',
@@ -53,7 +55,9 @@ function Auth({openAuth,setOpenAuth,closeAuthModal}) {
      <Box>
      
          <Box mt={'15%'} >
-             <Button colorScheme={'#1d1d1d'} border={'3px solid white'} w={'80%'} ml={'10%'}>Login With google</Button>
+             <Button  fontWeight={'600'} colorScheme={'#1d1d1d'} border={'3px solid white'} w={'80%'} ml={'10%'}>
+              <Img h={'7'} mr={'2'} ml={'-5'} src={googleIcon} alt="google_icon" />
+              Login With google</Button>
               <Text color={'white'} textAlign={'center'} mt={'8%'} mb={'5%'}>OR</Text>
            <Input 
            type="text" 

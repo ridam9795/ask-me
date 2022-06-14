@@ -3,6 +3,7 @@ import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import {  NavLink } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Box } from '@chakra-ui/react';
+import { SiteState } from '../../Context/AskMeProvider';
 
 
 function Sidebar() {
@@ -10,16 +11,14 @@ function Sidebar() {
     color:"red"
   };
 
-    const sidePanelList=["Marketing","Finance","Invention and Inventions","The Internet","Computer Science"
-           ,"Mathematics","Economics","Business","Education","Science",
-           "Technology","Discover Spaces"]
+   const {categoryList,setCategoryList}=SiteState();
 
   return (
     <Box className='sidebar'>
 <ProSidebar >
   <Menu iconShape="square">
-      {sidePanelList.map((item,index)=>{
-        let val=item.replaceAll(" ","-")
+      {categoryList.map((item,index)=>{
+        let val=item.name.replaceAll(" ","-")
           return (
                <MenuItem key={index}><NavLink 
                 
@@ -27,7 +26,7 @@ function Sidebar() {
                style={({ isActive }) =>
               isActive ? activeStyle : undefined
             }  
-               >{item}</NavLink></MenuItem>
+               >{item.name}</NavLink></MenuItem>
             
     
 
