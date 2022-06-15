@@ -54,7 +54,7 @@ function Header(props) {
                      {/* <EditIcon color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/> */}
                      {/* <BellIcon  color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/>                 */}
                      <input type="text" className='Input' placeholder='search'/>
-                    <Button colorScheme={'red'} ml={'2%'} height={'8'} mt={'2'} onClick={openModal} >Ask Question</Button>
+                    <Button colorScheme={'red'} ml={'2%'} height={'8'} mt={'2'} onClick={()=>openModal("ask")} >Ask Question</Button>
        <ModalContent /> 
        {signedIn?( <Menu w={'10px'} ml={'100px'} pl={'20%'}>
   <MenuButton w={'60px'} ml={'5%'} rightIcon={<ChevronDownIcon />}>

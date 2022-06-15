@@ -37,3 +37,9 @@
 span {
     color: #65c981 !important;
 }
+.tagList {
+
+    margin-bottom: 5px;
+    cursor: pointer;
+
+}
