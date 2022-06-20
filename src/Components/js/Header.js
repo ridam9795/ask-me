@@ -1,5 +1,5 @@
 import {     Avatar, Button } from '@chakra-ui/react'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-profile-avatar/dist/index.css'
 import {BellIcon, ChevronDownIcon, EditIcon} from '@chakra-ui/icons'
 import '../css/Header.css';
@@ -16,13 +16,21 @@ import {
 } from '@chakra-ui/react'
 import Auth from './Auth';
 function Header(props) {
+
+
  let activeStyle = {
     borderBottom:"3px solid red",
   };
-        const {openModal}=SiteState();
-        const [signedIn,setSignedIn]=useState(false);
-        const [openAuth,setOpenAuth]=useState(false);
-   
+  const {signedIn,setSignedIn,openModal,user,setUser}=SiteState();
+  const [openAuth,setOpenAuth]=useState(false);
+   useEffect(()=>{
+    const data=localStorage.getItem("userInfo");
+    if(data){
+      setUser(JSON.parse(data) );
+      setSignedIn(true)
+    }
+},[])
+
  function openAuthModal() {
     
     setOpenAuth(true);
@@ -60,13 +68,13 @@ function Header(props) {
   <MenuButton w={'60px'} ml={'5%'} rightIcon={<ChevronDownIcon />}>
      <Avatar 
           src='https://bit.ly/broken-link'
-          // name={"ridam Nagar"}
+           name={user?user.name:""}
               size={'md'}
               
             />  
   </MenuButton>
   <MenuList >
-    <MenuItem fontWeight={'800'} >ridamnagar11@gmail.com</MenuItem>
+    <MenuItem fontWeight={'800'} >{user?user.email:""}</MenuItem>
     <MenuDivider />
     <MenuItem fontWeight={'500'} >Profile</MenuItem>
     <MenuItem fontWeight={'500'}>Logout</MenuItem>

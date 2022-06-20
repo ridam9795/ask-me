@@ -3,20 +3,22 @@ import RichTextEditor from "react-rte";
 
 const SiteContext=createContext();
 const  AskMeProvider=({children})=> {
-  const sidePanelList=[{name:"Marketing",isFollowing:false},{name:"Finance",isFollowing:false},{name:"Invention and Inventions",isFollowing:false}
-    ,{name:"The Internet",isFollowing:false},{name:"Computer Science",isFollowing:false},{name:"Mathematics",isFollowing:false}
-    ,{name:"Economics",isFollowing:false},{name:"Business",isFollowing:false},{name:"Education",isFollowing:false}
-    ,{name:"Science",isFollowing:false},{name:"Technology",isFollowing:false},{name:"Discover Spaces",isFollowing:false}
-    ]
-     const [modalIsOpen, setIsOpen] = useState(false);
-      const [isPost,setIsPost]=useState(false);
-          const [question,setQuestion]=useState(RichTextEditor.createEmptyValue());
-            const [post,setPost]=useState(RichTextEditor.createEmptyValue());
-            const [questionContent,setQuestionContent]=useState('')
-            const [postContent,setPostContent]=useState('');
-            const [postList,setPostList]=useState([]);
-            const [questionList,setQuestionList]=useState([]);
-            const [categoryList,setCategoryList]=useState(sidePanelList);
+const sidePanelList=[{name:"Marketing",isFollowing:false},{name:"Finance",isFollowing:false},{name:"Invention and Inventions",isFollowing:false}
+  ,{name:"The Internet",isFollowing:false},{name:"Computer Science",isFollowing:false},{name:"Mathematics",isFollowing:false}
+  ,{name:"Economics",isFollowing:false},{name:"Business",isFollowing:false},{name:"Education",isFollowing:false}
+  ,{name:"Science",isFollowing:false},{name:"Technology",isFollowing:false},{name:"Discover Spaces",isFollowing:false}
+  ]
+const [modalIsOpen, setIsOpen] = useState(false);
+const [isPost,setIsPost]=useState(false);
+const [question,setQuestion]=useState(RichTextEditor.createEmptyValue());
+const [post,setPost]=useState(RichTextEditor.createEmptyValue());
+const [questionContent,setQuestionContent]=useState('')
+const [postContent,setPostContent]=useState('');
+const [postList,setPostList]=useState([]);
+const [questionList,setQuestionList]=useState([]);
+const [categoryList,setCategoryList]=useState(sidePanelList);
+const [signedIn,setSignedIn]=useState(false);
+const [user,setUser]=useState();
 
  function openModal(tab) {
     if(tab==="ask"){
@@ -53,7 +55,11 @@ const  AskMeProvider=({children})=> {
         questionList,
         setQuestionList,
         categoryList,
-        setCategoryList
+        setCategoryList,
+        signedIn,
+        setSignedIn,
+        user,
+        setUser
     }}   >
 
         {children}

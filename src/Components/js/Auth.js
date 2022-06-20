@@ -3,8 +3,10 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Text, Input, Img } fro
 import {    Box } from '@chakra-ui/react'
 import Modal from 'react-modal';
 import '../css/ModalContent.css';
-import { FormLabel } from '@chakra-ui/core';
+import { FormLabel, useToast } from '@chakra-ui/core';
 import googleIcon from '../../../src/googleIcon.png'
+import { SiteState } from '../../Context/AskMeProvider';
+import axios from 'axios';
 
 const customStyles = {
   content: {
@@ -29,11 +31,57 @@ function Auth({openAuth,setOpenAuth,closeAuthModal}) {
  const [signUpConfPass,setSignUpConfPass]=useState("");
  const [signInEmail,setSignInEmail]=useState("");
  const [signInPass,setSignInPass]=useState("");
+ const {signedIn,setSignedIn,user,setUser}=SiteState();
+
+const proxy="http:localhost:5000/"
+ const toast=useToast();
+axios.defaults.baseURL = 'http://localhost:5000';
+
  const handleLogin=()=>{
   console.log("Login",signInEmail,signInPass)
  }
- const handleSignup=()=>{
+ const handleSignup= async ()=>{
   console.log("Sign up",signUpEmail,signUpPass,signUpName,signUpConfPass)
+  if(!signUpEmail || !signUpPass || !signUpName || !signUpConfPass ){
+   toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+  }
+  if( signUpPass!==signUpConfPass ){
+     toast({
+        title: "password and confirm password must be same",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+  }
+  try{
+
+  const {data} = await axios.post('/api/user/',{signUpName,signUpEmail,signUpPass})
+  console.log("returned data",data)
+  setSignedIn(true);
+  localStorage.setItem("userInfo",JSON.stringify(data));
+  setUser(data);
+  }catch(error){
+     toast({
+        title: "Error Occured!",
+        status: error.response.data.message,
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+
+  }
+ 
+
+
+
+
  }
 
   return (

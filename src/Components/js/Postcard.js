@@ -6,6 +6,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentBoxCard from './CommentBoxCard';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { SiteState } from '../../Context/AskMeProvider';
 function Postcard({postValue}) {
   const [liked,setLiked]=useState(false);
   const [unliked,setUnliked]=useState(false);
@@ -14,7 +15,7 @@ function Postcard({postValue}) {
   const [commentList,setCommentList]=useState([]);
   const [itemToShow,setItemToShow]=useState(3);
   const [showCommentVisibility,setShowCommnentVisibility ]=useState(true);
-
+  const {user}=SiteState();
    useEffect(()=>{
      let len=commentList.length;
        if(itemToShow<len){
@@ -54,11 +55,11 @@ setItemToShow(itemToShow+3)
       
         <div className='postCardHeader' >
             <div style={{width:'10%'}}>
-    <Avatar src='https://bit.ly/broken-link'size={'sm'} /> 
+    <Avatar name={user?user.name:""} src='https://bit.ly/broken-link'size={'sm'} /> 
 
             </div>
             <div style={{width:'90%'}}>
-                <p style={{fontWeight:'750' }}>Ridam Nagar . <Button colorScheme={'#1d1d1d'} color='#4fa8db' fontSize={'15px'} height='5' mb={'1'}>Follow</Button></p>
+                <p style={{fontWeight:'750' }}>{user?user.name:"Anonymous"} <Button colorScheme={'#1d1d1d'} color='#4fa8db' fontSize={'15px'} height='5' mb={'1'}>Follow</Button></p>
                 <p style={{fontSize:'12px'}} >Software Engineer</p>
             </div>
         </div>
