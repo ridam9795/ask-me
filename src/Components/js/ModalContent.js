@@ -34,7 +34,7 @@ const customStyles = {
 function ModalContent(props) {
       const {postList,setPostList,questionList,
         setQuestionList,modalIsOpen,isPost,closeModal
-        ,postContent,setPostContent,
+        ,postContent,setPostContent,signedIn,
         questionContent,categoryList,setQuestionContent}=SiteState();
       const [question,setQuestion]=useState(RichTextEditor.createEmptyValue());
       const [post,setPost]=useState(RichTextEditor.createEmptyValue());
@@ -92,17 +92,52 @@ const  onAddQuestion = value => {
 
   const addQuestion=(e)=>{
         e.preventDefault();
+        if(!signedIn){
+              toast({
+        title: "Please Sign in to add question.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+        }else{
         setQuestionList([...questionList,questionContent ])
         setQuestionContent("");
         setQuestion(RichTextEditor.createEmptyValue());
         closeModal();
+
+        }
+     
   }
   const addPost=(e)=>{
-    e.preventDefault();
+            e.preventDefault();
+
+    if(!signedIn){
+          toast({
+        title: "Please Sign in to add post.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }else{
         setPostList([...postList,postContent])
-setPostContent("")
-setPost(RichTextEditor.createEmptyValue())
+        setPostContent("")
+        setPost(RichTextEditor.createEmptyValue())
         closeModal();
+        setBadge([])
+        setSearch("");
+        setTag([])
+    }
+
+        
+  }
+  const handleRemove=(idx)=>{
+    console.log("idx",idx);
+    const filtertedBadge=badge.filter((item,index)=>{
+      return index!=idx;
+    })
+    setBadge(filtertedBadge)
   }
   
   return (
@@ -167,7 +202,7 @@ setPost(RichTextEditor.createEmptyValue())
                                     
                                     >
                               {item}
-                              <CloseIcon ml={'3'}/>
+                              <CloseIcon ml={'3'} onClick={()=>handleRemove(index)}/>
                             </Badge>
                             )
                           })

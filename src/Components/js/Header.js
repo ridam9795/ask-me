@@ -31,13 +31,19 @@ function Header(props) {
     }
 },[])
 
- function openAuthModal() {
+const handleLogout=()=>{
+ localStorage.removeItem("userInfo");
+ setSignedIn(false);
+ setUser(null)
+}
+
+ const openAuthModal=()=> {
     
     setOpenAuth(true);
   }
 
 
-  function closeAuthModal() {
+  const closeAuthModal=()=> {
     setOpenAuth(false);
   }
 
@@ -77,7 +83,7 @@ function Header(props) {
     <MenuItem fontWeight={'800'} >{user?user.email:""}</MenuItem>
     <MenuDivider />
     <MenuItem fontWeight={'500'} >Profile</MenuItem>
-    <MenuItem fontWeight={'500'}>Logout</MenuItem>
+    <MenuItem fontWeight={'500'} onClick={handleLogout}>Logout</MenuItem>
    
   </MenuList>
 </Menu>):(<><Button ml={'2%'} mt={'2'} height={'8'} colorScheme={'green'} onClick={openAuthModal}>Sign in or Create account</Button>               <Auth openAuth={openAuth} setOpenAuth={setOpenAuth} closeAuthModal={closeAuthModal}/>

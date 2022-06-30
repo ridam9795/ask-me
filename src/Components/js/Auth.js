@@ -37,8 +37,35 @@ const proxy="http:localhost:5000/"
  const toast=useToast();
 axios.defaults.baseURL = 'http://localhost:5000';
 
- const handleLogin=()=>{
+ const handleLogin=async()=>{
   console.log("Login",signInEmail,signInPass)
+  if(!signInEmail || !signInPass ){
+   toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+  }
+
+  try{
+
+  const {data} = await axios.post('/api/user/login',{signInEmail,signInPass})
+  console.log("returned data",data)
+  setSignedIn(true);
+  localStorage.setItem("userInfo",JSON.stringify(data));
+  setUser(data);
+  }catch(error){
+     toast({
+        title: "Error Occured!",
+        status: error.response.data.message,
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+
+  }
  }
  const handleSignup= async ()=>{
   console.log("Sign up",signUpEmail,signUpPass,signUpName,signUpConfPass)

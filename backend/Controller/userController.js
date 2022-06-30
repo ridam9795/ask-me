@@ -2,9 +2,7 @@ const asyncHandler=require("express-async-handler");
 const generateToken = require("../config/generateToken");
 const User = require("../Model/userModel");
 const registerUser=asyncHandler( async (req,res)=>{
-    console.log("body>>>>>>>> ",req.body)
    const {signUpName,signUpEmail,signUpPass}=req.body;
-   console.log(signUpName+" "+signUpPass+" "+signUpEmail);
    if(!signUpEmail || !signUpPass || !signUpName){
     res.status(400);
           throw new Error("Please Enter all the fields")
@@ -37,12 +35,13 @@ const registerUser=asyncHandler( async (req,res)=>{
 }) 
 
 const loginUser=asyncHandler(async (req,res)=>{
-   const {email,password}=req.body;
-   if(!email || !password){
-    res.status(401).send("Please fill all the deatils");
+   const {signInEmail,signInPass}=req.body;
+   if(!signInEmail || !signInPass){
+    res.status(401)
+    throw new Error("Please fill all the deatils");
    }
-   const user=await User.findOne({email});
-   if(user && (await user.matchPassword(password) )){
+   const user=await User.findOne({email:signInEmail});
+   if(user && (await user.matchPassword(signInPass) )){
        res.status(200).json({
         _id:user._id,
          name:user.name,
@@ -50,7 +49,8 @@ const loginUser=asyncHandler(async (req,res)=>{
          token:generateToken(user._id)
        })
    }else{
-    res.status(401).send("Invalid Email or password")
+    res.status(401)
+    throw new Error("Invalid Email or password")
    }
 
 
