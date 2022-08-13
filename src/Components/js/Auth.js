@@ -32,6 +32,7 @@ function Auth({openAuth,setOpenAuth,closeAuthModal}) {
  const [signInEmail,setSignInEmail]=useState("");
  const [signInPass,setSignInPass]=useState("");
  const {signedIn,setSignedIn,user,setUser}=SiteState();
+ const [designation,setDesignation]=useState("");
 
 const proxy="http:localhost:5000/"
  const toast=useToast();
@@ -68,7 +69,7 @@ axios.defaults.baseURL = 'http://localhost:5000';
   }
  }
  const handleSignup= async ()=>{
-  console.log("Sign up",signUpEmail,signUpPass,signUpName,signUpConfPass)
+  console.log("Sign up",signUpEmail,signUpPass,signUpName,signUpConfPass,designation)
   if(!signUpEmail || !signUpPass || !signUpName || !signUpConfPass ){
    toast({
         title: "Please Fill all the Feilds",
@@ -89,7 +90,7 @@ axios.defaults.baseURL = 'http://localhost:5000';
   }
   try{
 
-  const {data} = await axios.post('/api/user/',{signUpName,signUpEmail,signUpPass})
+  const {data} = await axios.post('/api/user/',{signUpName,signUpEmail,signUpPass,designation})
   console.log("returned data",data)
   setSignedIn(true);
   localStorage.setItem("userInfo",JSON.stringify(data));
@@ -192,6 +193,19 @@ axios.defaults.baseURL = 'http://localhost:5000';
            }}
            value={signUpEmail}
                  />
+            <FormLabel color={'white'} ml={'5%'} mb={'2%'}  >Designation</FormLabel>       
+              <Input 
+              type="text"
+                placeholder='Enter Designation' 
+                w={'90%' } 
+                ml={'5%'} 
+                color={'white'}
+                mb={'5%'} 
+                onChange={(e)=>{
+                  setDesignation(e.target.value);
+                }}
+                value={designation}
+                />
               <FormLabel color={'white'}   ml={'5%'}  mb={'2%'} >Password</FormLabel>   
               <Input 
               type="password" 

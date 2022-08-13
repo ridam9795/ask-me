@@ -1,19 +1,14 @@
 import React, { useState } from 'react'
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, HStack, Badge, Input } from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, Badge, Input } from '@chakra-ui/react'
 import {    Box } from '@chakra-ui/react'
 import Modal from 'react-modal';
 import { CloseIcon } from '@chakra-ui/icons';
 import '../css/ModalContent.css';
 import { SiteState } from '../../Context/AskMeProvider';
 import RichTextEditor from "react-rte";
-import { useToast } from '@chakra-ui/react'
-import {
-  Tag,
-  TagLabel,
-  TagLeftIcon,
-  TagRightIcon,
-  TagCloseButton,
-} from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react';
+import axios from 'axios';
+
 
 const customStyles = {
   content: {
@@ -32,7 +27,7 @@ const customStyles = {
   },
 };
 function ModalContent(props) {
-      const {postList,setPostList,questionList,
+      const {postList,setPostList,questionList,user,
         setQuestionList,modalIsOpen,isPost,closeModal
         ,postContent,setPostContent,signedIn,
         questionContent,categoryList,setQuestionContent}=SiteState();
@@ -109,7 +104,7 @@ const  onAddQuestion = value => {
         }
      
   }
-  const addPost=(e)=>{
+  const addPost=async (e)=>{
             e.preventDefault();
 
     if(!signedIn){
@@ -121,6 +116,8 @@ const  onAddQuestion = value => {
         position: "top",
       });
     }else{
+      console.log("designation: ",(user))
+        const currPost=await axios.post("/api/user/createpost",{id:user._id,userName:user.name,designation:user.designation, content:postContent,likeCount:0,commentList:[]})
         setPostList([...postList,postContent])
         setPostContent("")
         setPost(RichTextEditor.createEmptyValue())
@@ -135,7 +132,7 @@ const  onAddQuestion = value => {
   const handleRemove=(idx)=>{
     console.log("idx",idx);
     const filtertedBadge=badge.filter((item,index)=>{
-      return index!=idx;
+      return index!==idx;
     })
     setBadge(filtertedBadge)
   }

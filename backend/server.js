@@ -14,7 +14,6 @@ app.get('/',(req,res)=>{
     res.send("Api is working");
 })
 app.use('/api/user',userRoutes)
-
 app.listen(port,()=>{
     console.log("Server is up")
 })

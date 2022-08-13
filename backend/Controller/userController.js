@@ -1,9 +1,11 @@
 const asyncHandler=require("express-async-handler");
 const generateToken = require("../config/generateToken");
+const Post = require("../Model/postModel");
 const User = require("../Model/userModel");
 const registerUser=asyncHandler( async (req,res)=>{
-   const {signUpName,signUpEmail,signUpPass}=req.body;
-   if(!signUpEmail || !signUpPass || !signUpName){
+   const {signUpName,signUpEmail,signUpPass,designation}=req.body;
+   if(!signUpEmail || !signUpPass || !signUpName || !designation){
+    console.log(signUpEmail+" "+signUpPass+" "+signUpName+" "+designation)
     res.status(400);
           throw new Error("Please Enter all the fields")
    }
@@ -16,14 +18,16 @@ const registerUser=asyncHandler( async (req,res)=>{
         const user =await User.create({
             name:signUpName,
             email:signUpEmail,
-            password:signUpPass
+            password:signUpPass,
+            designation:designation
         })
         if(user){
             res.status(201).json({
                 _id:user._id,
                 name:user.name,
                 email:user.email,
-                token:generateToken(user._id)
+                token:generateToken(user._id),
+                designation:designation
             })
         }else{
             res.status(400)
@@ -36,17 +40,21 @@ const registerUser=asyncHandler( async (req,res)=>{
 
 const loginUser=asyncHandler(async (req,res)=>{
    const {signInEmail,signInPass}=req.body;
+   console.log(signInEmail+" "+signInPass)
    if(!signInEmail || !signInPass){
     res.status(401)
     throw new Error("Please fill all the deatils");
    }
    const user=await User.findOne({email:signInEmail});
    if(user && (await user.matchPassword(signInPass) )){
+    console.log("desig: "+  (user.designation))
        res.status(200).json({
         _id:user._id,
          name:user.name,
          email:user.email,
-         token:generateToken(user._id)
+         token:generateToken(user._id),
+         designation:user.designation
+
        })
    }else{
     res.status(401)
@@ -56,5 +64,54 @@ const loginUser=asyncHandler(async (req,res)=>{
 
 
 })
+const createPost=asyncHandler(async (req,res)=>{
+   const {id,userName,tag,content,likeCount,commentList,designation}=req.body;
+   console.log("Create post :"+id+" content: "+content+" name: "+userName+" designation: "+designation);
+   if(!id){
+    res.status(401)
+    throw new Error("Please login to add post");
+   }
+   if(!content){
+    res.status(401)
+    throw new Error("Please add some content...");
+   }
+   const post=await Post.create({
+         user:id,
+         userName:userName,
+         content:content,
+         likeCount:likeCount,
+         commentList:commentList,
+         tag:tag,
+         designation:designation
+   })
+     if(post){
+            res.status(200).json({
+                user:id,
+                userName:userName,
+                content:content,
+                likeCount:likeCount,
+                commentList:commentList,
+                tag:tag,
+                designation:designation
 
-module.exports={registerUser,loginUser}
+                
+            })
+        }else{
+            res.status(400)
+            throw new Error("Failed to create the Post");
+        }
+  
+
+})
+const fetchPostList=asyncHandler(async(req,res)=>{
+  const postList=await Post.find().sort({createdAt: -1})
+  if(postList){
+    res.status(200).send(postList)
+  }else{
+        res.status(400).send("No post to show")
+
+
+  }
+})
+
+module.exports={registerUser,loginUser,createPost,fetchPostList}

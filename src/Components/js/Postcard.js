@@ -8,6 +8,7 @@ import CommentBoxCard from './CommentBoxCard';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { SiteState } from '../../Context/AskMeProvider';
 function Postcard({postValue}) {
+  const {_id,user,userName,content,likeCount,designation}=postValue;
   const [liked,setLiked]=useState(false);
   const [unliked,setUnliked]=useState(false);
   const [visibility,setVisibility]=useState(false);
@@ -15,9 +16,11 @@ function Postcard({postValue}) {
   const [commentList,setCommentList]=useState([]);
   const [itemToShow,setItemToShow]=useState(3);
   const [showCommentVisibility,setShowCommnentVisibility ]=useState(true);
-  const {user}=SiteState();
+  //const {user}=SiteState();
    useEffect(()=>{
      let len=commentList.length;
+     console.log(postValue)
+     console.log("id: "+(_id)+" user: "+user+" content: "+content+" likes: "+likeCount+" comment: "+commentList.length+" designation: "+designation)
        if(itemToShow<len){
          setShowCommnentVisibility(true)
        }
@@ -50,20 +53,17 @@ setItemToShow(itemToShow+3)
   return (
     <div>
       <div  className='postCard'>
-
-      
-      
         <div className='postCardHeader' >
             <div style={{width:'10%'}}>
-    <Avatar name={user?user.name:""} src='https://bit.ly/broken-link'size={'sm'} /> 
+    <Avatar name={user?userName:""} src='https://bit.ly/broken-link'size={'sm'} /> 
 
             </div>
             <div style={{width:'90%'}}>
-                <p style={{fontWeight:'750' }}>{user?user.name:"Anonymous"} <Button colorScheme={'#1d1d1d'} color='#4fa8db' fontSize={'15px'} height='5' mb={'1'}>Follow</Button></p>
-                <p style={{fontSize:'12px'}} >Software Engineer</p>
+                <p style={{fontWeight:'750' }}>{user?userName:"Anonymous"} <Button colorScheme={'#1d1d1d'} color='#4fa8db' fontSize={'15px'} height='5' mb={'1'}>Follow</Button></p>
+                <p style={{fontSize:'12px'}} >{user?designation:""}</p>
             </div>
         </div>
-        <div className='postCardBody' dangerouslySetInnerHTML={{__html:postValue}} ></div>
+        <div className='postCardBody' dangerouslySetInnerHTML={{__html:content}} ></div>
         <div className='postCardFooter' >
           <ThumbUpIcon style={{color:liked?'green':'4fa8db'}}  onClick={handleLike} />
           <ThumbDownIcon style={{ marginLeft:'25px',color:unliked?'#eb332d':'4fa8db' }}  onClick={handleUnLike}/>

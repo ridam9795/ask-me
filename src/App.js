@@ -5,8 +5,12 @@ import {BrowserRouter as Router,Routes,Route} from 'react-router-dom';
 import CategoryPage from './Components/js/CategoryPage';
 import Post from './Components/js/Post';
 import Question from './Components/js/Question';
+import { useEffect } from 'react';
 function App() {
-
+useEffect(() => {
+  console.log("called: ");
+  window.scrollTo(0, 0)
+}, [])
 
   return (
     <Router >

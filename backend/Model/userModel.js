@@ -5,7 +5,10 @@ const userSchema=mongoose.Schema({
     name:{type:String ,required:true},
     email:{type:String,required:true},
     password:{type:String ,required:true },
+    designation:{type:String,required:true}
 
+},{
+    timestamps:true
 })
 userSchema.methods.matchPassword=async function(password){
     return await bcrypt.compare(password,this.password);
