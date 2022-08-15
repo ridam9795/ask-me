@@ -117,7 +117,7 @@ const  onAddQuestion = value => {
       });
     }else{
       console.log("designation: ",(user))
-        const currPost=await axios.post("/api/user/createpost",{id:user._id,userName:user.name,designation:user.designation, content:postContent,likeCount:0,commentList:[]})
+        const currPost=await axios.post("/api/user/createpost",{id:user._id,userName:user.name,designation:user.designation, content:postContent,likeCount:[],commentList:[]})
         setPostList([...postList,postContent])
         setPostContent("")
         setPost(RichTextEditor.createEmptyValue())

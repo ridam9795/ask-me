@@ -71,7 +71,7 @@ const handleLogout=()=>{
                     <Button colorScheme={'red'} ml={'2%'} height={'8'} mt={'2'} onClick={()=>openModal("ask")} >Ask Question</Button>
        <ModalContent /> 
        {signedIn?( <Menu w={'10px'} ml={'100px'} pl={'20%'}>
-  <MenuButton w={'60px'} ml={'5%'} rightIcon={<ChevronDownIcon />}>
+  <MenuButton w={'60px'} ml={'5%'} righticon={<ChevronDownIcon />}>
      <Avatar 
           src='https://bit.ly/broken-link'
            name={user?user.name:""}

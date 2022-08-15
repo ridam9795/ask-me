@@ -38,8 +38,8 @@ const proxy="http:localhost:5000/"
  const toast=useToast();
 axios.defaults.baseURL = 'http://localhost:5000';
 
- const handleLogin=async()=>{
-  console.log("Login",signInEmail,signInPass)
+ const handleLogin=async(e)=>{
+  console.log("Login",signInEmail,signInPass,"e: ",e)
   if(!signInEmail || !signInPass ){
    toast({
         title: "Please Fill all the Feilds",
@@ -57,6 +57,7 @@ axios.defaults.baseURL = 'http://localhost:5000';
   setSignedIn(true);
   localStorage.setItem("userInfo",JSON.stringify(data));
   setUser(data);
+  
   }catch(error){
      toast({
         title: "Error Occured!",

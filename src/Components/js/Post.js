@@ -6,18 +6,18 @@ import Postcard from './Postcard';
 import axios from 'axios';
 
 function Post() {
-        const {postList}=SiteState();
+        const {postList,signedIn}=SiteState();
         const [currPostList,setCurrPostList]=useState([]);
         const getList=async()=>{
           const fetchedList=await axios.get('/api/user/postList');
               setCurrPostList(fetchedList.data);
-          console.log("fetched List",fetchedList.data)
+      //    console.log("fetched List",fetchedList.data)
 
         }
         useEffect(()=>{
           getList()
          
-        },[postList.length])
+        },[JSON.stringify(postList),signedIn])
 
   return (
     <>

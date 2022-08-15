@@ -1,4 +1,4 @@
-import { Avatar, Button } from '@chakra-ui/react'
+import { Avatar, Box, Button } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import '../css/PostCard.css'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -7,8 +7,10 @@ import CommentIcon from '@mui/icons-material/Comment';
 import CommentBoxCard from './CommentBoxCard';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { SiteState } from '../../Context/AskMeProvider';
+import axios from 'axios';
 function Postcard({postValue}) {
-  const {_id,user,userName,content,likeCount,designation}=postValue;
+  const {_id,user,userName,content,designation}=postValue; 
+  const {postList,signedIn}=SiteState();
   const [liked,setLiked]=useState(false);
   const [unliked,setUnliked]=useState(false);
   const [visibility,setVisibility]=useState(false);
@@ -16,20 +18,35 @@ function Postcard({postValue}) {
   const [commentList,setCommentList]=useState([]);
   const [itemToShow,setItemToShow]=useState(3);
   const [showCommentVisibility,setShowCommnentVisibility ]=useState(true);
+  let {likeCount}=postValue;
+  let lc=false;
+  let loggedInUserId=""
+    if(localStorage.getItem("userInfo")){
+    loggedInUserId=JSON.parse(localStorage.getItem("userInfo"))._id;
+   lc=likeCount.includes(loggedInUserId.toString());
+  } 
   //const {user}=SiteState();
    useEffect(()=>{
+    setLiked(lc);
      let len=commentList.length;
-     console.log(postValue)
-     console.log("id: "+(_id)+" user: "+user+" content: "+content+" likes: "+likeCount+" comment: "+commentList.length+" designation: "+designation)
-       if(itemToShow<len){
+    // console.log(postValue)
+    // console.log("id: "+(_id)+" user: "+user+" content: "+content+" list: "+likeCount+" lc: "+lc+" has: "+(likeCount.includes(user)))
+     
+     if(itemToShow<len){
          setShowCommnentVisibility(true)
        }
-   },[commentList.length,itemToShow])
-  const handleLike=()=>{
-   setLiked(!liked);
+   },[commentList.length,itemToShow,JSON.stringify(postList),signedIn,lc])
+
+  const handleLike=async ()=>{
+   let updatePostLikes=await axios.put('/api/user/updatePostLikes',{id:_id,likeCount:likeCount,user_id:loggedInUserId.toString(),isLiked:!liked}).then((data)=>{
+    //console.log("data: ",data.data.likeCount);
+   });
+ //   console.log("after: ",likeCount)
+   setLiked(!liked)
    setUnliked(false);
   }
-  const handleUnLike=()=>{
+
+  const handleUnLike=async ()=>{
       setUnliked(!unliked);
       setLiked(false);
 
@@ -66,6 +83,7 @@ setItemToShow(itemToShow+3)
         <div className='postCardBody' dangerouslySetInnerHTML={{__html:content}} ></div>
         <div className='postCardFooter' >
           <ThumbUpIcon style={{color:liked?'green':'4fa8db'}}  onClick={handleLike} />
+           
           <ThumbDownIcon style={{ marginLeft:'25px',color:unliked?'#eb332d':'4fa8db' }}  onClick={handleUnLike}/>
 
           <CommentIcon style={{ marginLeft:'25px' }} onClick={()=>{setVisibility(!visibility)}} />

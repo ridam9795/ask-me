@@ -5,7 +5,7 @@ const User = require("../Model/userModel");
 const registerUser=asyncHandler( async (req,res)=>{
    const {signUpName,signUpEmail,signUpPass,designation}=req.body;
    if(!signUpEmail || !signUpPass || !signUpName || !designation){
-    console.log(signUpEmail+" "+signUpPass+" "+signUpName+" "+designation)
+   // console.log(signUpEmail+" "+signUpPass+" "+signUpName+" "+designation)
     res.status(400);
           throw new Error("Please Enter all the fields")
    }
@@ -40,14 +40,14 @@ const registerUser=asyncHandler( async (req,res)=>{
 
 const loginUser=asyncHandler(async (req,res)=>{
    const {signInEmail,signInPass}=req.body;
-   console.log(signInEmail+" "+signInPass)
+ //  console.log(signInEmail+" "+signInPass)
    if(!signInEmail || !signInPass){
     res.status(401)
     throw new Error("Please fill all the deatils");
    }
    const user=await User.findOne({email:signInEmail});
    if(user && (await user.matchPassword(signInPass) )){
-    console.log("desig: "+  (user.designation))
+  //  console.log("desig: "+  (user.designation))
        res.status(200).json({
         _id:user._id,
          name:user.name,
@@ -66,7 +66,7 @@ const loginUser=asyncHandler(async (req,res)=>{
 })
 const createPost=asyncHandler(async (req,res)=>{
    const {id,userName,tag,content,likeCount,commentList,designation}=req.body;
-   console.log("Create post :"+id+" content: "+content+" name: "+userName+" designation: "+designation);
+  // console.log("Create post :"+id+" content: "+content+" name: "+userName+" designation: "+designation);
    if(!id){
     res.status(401)
     throw new Error("Please login to add post");
@@ -113,5 +113,42 @@ const fetchPostList=asyncHandler(async(req,res)=>{
 
   }
 })
+const updateLikes=asyncHandler(async(req,res)=>{
+    let {id,likeCount,user_id,isLiked}=req.body;
+    let lc=likeCount.includes(user_id);
+   // console.log("lc>>>>>>"+lc+" isLiked >>>> "+isLiked );
+    let post="";
+    if(isLiked){
+      //  console.log("--------------liked--------------")
+        if(!lc){
+            likeCount.push(user_id);
+        }
+      
+       
+     
+    }else if(!isLiked){
+       // console.log("-------------------unliked---------------------")
+        likeCount=likeCount.filter((lid)=>{
+            return lid!==user_id
+        })
+    }
+           // console.log("curr List: "+likeCount+" post: "+id);
 
-module.exports={registerUser,loginUser,createPost,fetchPostList}
+     post=await Post.findOneAndUpdate({_id:id},{
+        likeCount:likeCount
+    });
+
+   
+    
+    if(post){
+        res.status(200).send(post);
+    }else{
+        res.status(400).send("post not found")
+    }
+
+    
+   
+
+})
+
+module.exports={registerUser,loginUser,createPost,fetchPostList,updateLikes}

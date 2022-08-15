@@ -8,7 +8,6 @@ import Question from './Components/js/Question';
 import { useEffect } from 'react';
 function App() {
 useEffect(() => {
-  console.log("called: ");
   window.scrollTo(0, 0)
 }, [])
 

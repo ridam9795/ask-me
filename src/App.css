@@ -16,7 +16,9 @@
 .content {
     display: flex;
     background-color: #0c0d0c;
-        height: 2000px;
+    height: auto;
+        min-height: 100%;
+        padding-bottom: 100px;
 }
 .editor {
     position: fixed;
