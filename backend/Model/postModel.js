@@ -5,12 +5,12 @@ const postSchema=mongoose.Schema({
     content:{ type:String },
     userName:{type:String},
     likeCount:[{type:String}],
-    commentList:[{type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    commentList:{},
     tag:[{type:String}],
     designation:{type:String,required:true}
 
 },{
-    timestamps:true
+    timestamps:true,
 })
 const Post=mongoose.model("Post",postSchema);
 

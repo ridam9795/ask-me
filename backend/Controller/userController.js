@@ -2,6 +2,7 @@ const asyncHandler=require("express-async-handler");
 const generateToken = require("../config/generateToken");
 const Post = require("../Model/postModel");
 const User = require("../Model/userModel");
+const Comment=require("../Model/commentModel")
 const registerUser=asyncHandler( async (req,res)=>{
    const {signUpName,signUpEmail,signUpPass,designation}=req.body;
    if(!signUpEmail || !signUpPass || !signUpName || !designation){
@@ -146,9 +147,32 @@ const updateLikes=asyncHandler(async(req,res)=>{
         res.status(400).send("post not found")
     }
 
+})
+const addComment=asyncHandler(async(req,res)=>{
+    const {post_id,user_name,user_designation,comment}=req.body;
+    if(!comment){
+        res.status(404).send("Please Enter some comment");
+    }
     
-   
+        const post=await Post.find({_id:post_id});
+        if(post.length>0){
+          //   post[0].commentList.push({comment:comment,user_name:user_name,user_designation:user_designation});
+             post[0].commentList=[{comment:comment,user_name:user_name,user_designation:user_designation},...post[0].commentList]
+           //  console.log("post: >>>>>>>>",post[0]," length:  ",post[0].commentList.length)
+             const updatePost=await Post.findOneAndUpdate({_id:post_id},post[0]);
+             if(updatePost){
+                        //    console.log(updatePost);
+
+                  res.status(200).send(post[0]);
+             }else{
+                res.status(400).send("Some Error occured while updating post")
+             }
+             
+        }else{
+            res.status(404).send("Post Not Found")
+        }
+    
 
 })
 
-module.exports={registerUser,loginUser,createPost,fetchPostList,updateLikes}
+module.exports={registerUser,loginUser,createPost,fetchPostList,updateLikes,addComment}

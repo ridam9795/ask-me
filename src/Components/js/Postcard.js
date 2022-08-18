@@ -1,5 +1,5 @@
 import { Avatar, Box, Button } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../css/PostCard.css'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
@@ -14,34 +14,37 @@ function Postcard({postValue}) {
   const [liked,setLiked]=useState(false);
   const [unliked,setUnliked]=useState(false);
   const [visibility,setVisibility]=useState(false);
-  const [comment,setComment]=useState('');
-  const [commentList,setCommentList]=useState([]);
+  //const [commentList,setCommentList]=useState([]);
   const [itemToShow,setItemToShow]=useState(3);
   const [showCommentVisibility,setShowCommnentVisibility ]=useState(true);
-  let {likeCount}=postValue;
+  const comment=useRef(null);
+  let {likeCount,commentList}=postValue;
+  let [currCommentList,setCommentList]=useState(commentList);
   let lc=false;
-  let loggedInUserId=""
+  let loggedInUserId="";
+  let loggedInUserName="";
+  let user_designation="";
     if(localStorage.getItem("userInfo")){
-    loggedInUserId=JSON.parse(localStorage.getItem("userInfo"))._id;
+      let currUser=JSON.parse(localStorage.getItem("userInfo"))
+    loggedInUserName=currUser.name;
+    loggedInUserId=currUser._id;
+    user_designation=currUser.designation;
    lc=likeCount.includes(loggedInUserId.toString());
   } 
   //const {user}=SiteState();
    useEffect(()=>{
     setLiked(lc);
-     let len=commentList.length;
-    // console.log(postValue)
-    // console.log("id: "+(_id)+" user: "+user+" content: "+content+" list: "+likeCount+" lc: "+lc+" has: "+(likeCount.includes(user)))
+     let len=currCommentList.length;
      
      if(itemToShow<len){
          setShowCommnentVisibility(true)
        }
-   },[commentList.length,itemToShow,JSON.stringify(postList),signedIn,lc])
+   },[currCommentList.length,itemToShow,JSON.stringify(postList),signedIn,lc])
+  
 
   const handleLike=async ()=>{
    let updatePostLikes=await axios.put('/api/user/updatePostLikes',{id:_id,likeCount:likeCount,user_id:loggedInUserId.toString(),isLiked:!liked}).then((data)=>{
-    //console.log("data: ",data.data.likeCount);
    });
- //   console.log("after: ",likeCount)
    setLiked(!liked)
    setUnliked(false);
   }
@@ -58,13 +61,22 @@ function Postcard({postValue}) {
    }
 setItemToShow(itemToShow+3)
   }
-  const handleComment=(e)=>{
-    setComment(e.target.value)
-  }
-  const handleSubmit=(e)=>{
+ 
+  const handleSubmit=async(e)=>{
     if(e.key==="Enter"){
-      setCommentList([comment,...commentList])
-      setComment("")
+          //console.log(comment.current.value)
+          try{
+     let addComment= await axios.put("/api/user/addComment",{post_id:_id,user_name:loggedInUserName,user_designation:user_designation ,comment:comment.current.value})
+    if(addComment){
+       setCommentList(addComment.data.commentList);
+    }
+
+      comment.current.value=""
+          }catch(err){
+            console.log("Some Error occurred")
+
+          }
+   
     }
   }
   return (
@@ -91,14 +103,15 @@ setItemToShow(itemToShow+3)
         </div>
       </div>
       <div>
+       
         { visibility? <div className='commentSection'>
-               <input type="text" className='commentBox' placeholder='Add Comment...' value={comment} onChange={handleComment} onKeyUpCapture={handleSubmit} />
+               <input type="text" className='commentBox' placeholder='Add Comment...' ref={comment} onKeyUpCapture={handleSubmit} />
                 {
-                  commentList.slice(0,itemToShow).map((item,index)=>{
-                     return  <CommentBoxCard key={index} comment={item} setItemToShow={setItemToShow} />
+                  currCommentList.slice(0,itemToShow).map((item,index)=>{
+                     return  <CommentBoxCard key={index} comment={item.comment} user_name={item.user_name} designation={item.user_designation} setItemToShow={setItemToShow} />
                   })
                 }
-                     {commentList.length>3 && showCommentVisibility ?(<Button colorScheme='blue' ml={'30%'} onClick={handleShowComment } ><ArrowDownwardIcon />View More Comments </Button>):(<></>) }   
+                     {currCommentList.length>3 && showCommentVisibility ?(<Button colorScheme='blue' ml={'30%'} onClick={handleShowComment } ><ArrowDownwardIcon />View More Comments </Button>):(<></>) }   
 
 
         </div>:(<></>)}
