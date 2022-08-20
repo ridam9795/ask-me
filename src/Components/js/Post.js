@@ -4,29 +4,52 @@ import { SiteState } from "../../Context/AskMeProvider";
 import CreatePost from "../CreatePost";
 import Postcard from "./Postcard";
 import axios from "axios";
+import { Spinner } from "@chakra-ui/react";
 
 function Post() {
-  const { postList, setPostList, signedIn } = SiteState();
+  const {
+    postList,
+    setPostList,
+    questionList,
+    setQuestionList,
+    signedIn,
+    currLocationPath,
+  } = SiteState();
+  //  console.log("curr: ", currLocationPath);
+  const [loading, setLoading] = useState(false);
   const getList = async () => {
-    const fetchedList = await axios.get("/api/user/postList");
-    setPostList(fetchedList.data);
+    let fetchedList = [];
+    //  console.log("currLocation: ", currLocationPath);
+    if (currLocationPath === "") {
+      fetchedList = await axios.get("/api/user/postList", {
+        params: { currLocationPath: "" },
+      });
+    } else if (currLocationPath === "answer") {
+      fetchedList = await axios.get("/api/user/postList", {
+        params: { currLocationPath: "answer" },
+      });
+    }
+    if (fetchedList.data.length === 0) {
+      setLoading(true);
+    } else {
+      setPostList(fetchedList.data);
+      setLoading(false);
+    }
+
     //    console.log("fetched List",fetchedList.data)
   };
   useEffect(() => {
     getList();
-  }, [JSON.stringify(postList), postList.length, signedIn]);
+  }, [postList.length, questionList.length, signedIn, currLocationPath]);
 
   return (
     <>
       <CreatePost />
       <div style={{ marginTop: "100px" }}>
-        {postList.length > 0 ? (
-          postList.map((post, index) => {
-            return <Postcard key={index} postValue={post} />;
-          })
-        ) : (
+        {!signedIn ? (
           <Box
-            ml={"100%"}
+            height={"340px"}
+            ml={"90%"}
             w={"100%"}
             fontSize={"40px"}
             color={"white"}
@@ -34,7 +57,22 @@ function Post() {
             fontWeight={"800"}
           >
             {" "}
-            Add your Post here
+            Login to see or add post
+          </Box>
+        ) : !loading && postList.length > 0 ? (
+          postList.map((post, index) => {
+            return <Postcard key={index} postValue={post} />;
+          })
+        ) : (
+          <Box
+            ml={"129%"}
+            w={"100%"}
+            fontSize={"40px"}
+            color={"white"}
+            mt={"40%"}
+            fontWeight={"800"}
+          >
+            <Spinner />
           </Box>
         )}
       </div>

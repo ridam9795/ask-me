@@ -19,52 +19,55 @@ const [questionList,setQuestionList]=useState([]);
 const [categoryList,setCategoryList]=useState(sidePanelList);
 const [signedIn,setSignedIn]=useState(false);
 const [user,setUser]=useState();
+const [currLocationPath, setCurrLocationPath] = useState("");
 
- function openModal(tab) {
-    if(tab==="ask"){
-      setIsPost(false);
-    }else{
-      setIsPost(true);
-    }
-    setIsOpen(true);
+function openModal(tab) {
+  if (tab === "ask") {
+    setIsPost(false);
+  } else {
+    setIsPost(true);
   }
+  setIsOpen(true);
+}
 
+function closeModal() {
+  setIsOpen(false);
+}
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  return (
-    <SiteContext.Provider value={{
-        question,
-        setQuestion,
-        post,
-        setPost,
-        modalIsOpen, 
-        setIsOpen,
-        isPost,
-        setIsPost,
-        openModal,
-        closeModal,
-        questionContent,
-        setQuestionContent,
-        postContent,
-        setPostContent,
-        postList,
-        setPostList,
-        questionList,
-        setQuestionList,
-        categoryList,
-        setCategoryList,
-        signedIn,
-        setSignedIn,
-        user,
-        setUser
-    }}   >
-
-        {children}
-    </SiteContext.Provider>
-  )
+return (
+  <SiteContext.Provider
+    value={{
+      question,
+      setQuestion,
+      post,
+      setPost,
+      modalIsOpen,
+      setIsOpen,
+      isPost,
+      setIsPost,
+      openModal,
+      closeModal,
+      questionContent,
+      setQuestionContent,
+      postContent,
+      setPostContent,
+      postList,
+      setPostList,
+      questionList,
+      setQuestionList,
+      categoryList,
+      setCategoryList,
+      signedIn,
+      setSignedIn,
+      user,
+      setUser,
+      currLocationPath,
+      setCurrLocationPath,
+    }}
+  >
+    {children}
+  </SiteContext.Provider>
+);
 }
 export const SiteState=()=>{
     return useContext(SiteContext);

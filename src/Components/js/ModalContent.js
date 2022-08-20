@@ -17,6 +17,7 @@ import { SiteState } from "../../Context/AskMeProvider";
 import RichTextEditor from "react-rte";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const customStyles = {
   content: {
@@ -93,7 +94,7 @@ function ModalContent(props) {
     setPostContent(value.toString("html"));
   };
 
-  const addQuestion = (e) => {
+  const addQuestion = async (e) => {
     e.preventDefault();
     if (!signedIn) {
       toast({
@@ -104,10 +105,36 @@ function ModalContent(props) {
         position: "top",
       });
     } else {
-      setQuestionList([...questionList, questionContent]);
-      setQuestionContent("");
-      setQuestion(RichTextEditor.createEmptyValue());
-      closeModal();
+      try {
+        const currQuestionPost = await axios.post(
+          "/api/user/createpost",
+          {
+            id: user._id,
+            userName: user.name,
+            designation: user.designation,
+            content: questionContent,
+            likeCount: [],
+            commentList: [],
+            tag: [],
+          },
+          { params: { currLocationPath: "answer" } }
+        );
+        setQuestionList([currQuestionPost.data, ...questionList]);
+        setQuestionContent("");
+        setQuestion(RichTextEditor.createEmptyValue());
+        closeModal();
+        setBadge([]);
+        setSearch("");
+        setTag([]);
+      } catch (err) {
+        toast({
+          title: err,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
     }
   };
   const addPost = async (e) => {
@@ -122,21 +149,36 @@ function ModalContent(props) {
         position: "top",
       });
     } else {
-      const currPost = await axios.post("/api/user/createpost", {
-        id: user._id,
-        userName: user.name,
-        designation: user.designation,
-        content: postContent,
-        likeCount: [],
-        commentList: [],
-      });
-      setPostList([currPost.data, ...postList]);
-      setPostContent("");
-      setPost(RichTextEditor.createEmptyValue());
-      closeModal();
-      setBadge([]);
-      setSearch("");
-      setTag([]);
+      try {
+        const currPost = await axios.post(
+          "/api/user/createpost",
+          {
+            id: user._id,
+            userName: user.name,
+            designation: user.designation,
+            content: postContent,
+            likeCount: [],
+            commentList: [],
+            tag: [],
+          },
+          { params: { currLocationPath: "" } }
+        );
+        setPostList([currPost.data, ...postList]);
+        setPostContent("");
+        setPost(RichTextEditor.createEmptyValue());
+        closeModal();
+        setBadge([]);
+        setSearch("");
+        setTag([]);
+      } catch (err) {
+        toast({
+          title: err,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
     }
   };
   const handleRemove = (idx) => {
@@ -159,8 +201,12 @@ function ModalContent(props) {
           <CloseIcon onClick={closeModal} mr={"10px"} cursor="pointer" />
           <Tabs defaultIndex={isPost ? 1 : 0}>
             <TabList>
-              <Tab w={"365px"}>Add Question </Tab>
-              <Tab w={"365px"}>Create Post</Tab>
+              <Link to="/answer">
+                <Tab w={"365px"}>Add Question </Tab>
+              </Link>
+              <Link to="/">
+                <Tab w={"365px"}>Create Post</Tab>
+              </Link>
             </TabList>
 
             <TabPanels>

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button } from "@chakra-ui/react";
+import { Avatar, Box, Button, Textarea } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import "../css/PostCard.css";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
@@ -10,12 +10,13 @@ import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
 function Postcard({ postValue }) {
   const { _id, user, userName, content, designation } = postValue;
-  const { postList, signedIn } = SiteState();
+  const { postList, questionList, signedIn, currLocationPath } = SiteState();
   const [liked, setLiked] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [itemToShow, setItemToShow] = useState(3);
   const [showCommentVisibility, setShowCommnentVisibility] = useState(true);
   const comment = useRef(null);
+  const answer = useRef(null);
   let { likeCount, commentList } = postValue;
   let [currCommentList, setCommentList] = useState([]);
   let lc = false;
@@ -32,49 +33,88 @@ function Postcard({ postValue }) {
   //const {user}=SiteState();
   useEffect(() => {
     setLiked(lc);
-    let len = currCommentList.length;
 
-    setCommentList(commentList);
+    let len = currCommentList.length;
     if (itemToShow < len) {
       setShowCommnentVisibility(true);
     }
-  }, [itemToShow, JSON.stringify(postList), signedIn, lc]);
+    setCommentList(commentList);
+  }, [
+    itemToShow,
+    commentList,
+    JSON.stringify(postList),
+    JSON.stringify(questionList),
+    signedIn,
+    lc,
+    showCommentVisibility,
+  ]);
 
   const handleLike = async () => {
-    let updatePostLikes = await axios
-      .put("/api/user/updatePostLikes", {
-        id: _id,
-        likeCount: likeCount,
-        user_id: loggedInUserId.toString(),
-        isLiked: !liked,
-      })
-      .then((data) => {});
+    if (currLocationPath === "answer") {
+      let updatePostLikes = await axios
+        .put(
+          "/api/user/updatePostLikes",
+          {
+            id: _id,
+            likeCount: likeCount,
+            user_id: loggedInUserId.toString(),
+            isLiked: !liked,
+          },
+          { params: { currLocationPath: "answer" } }
+        )
+        .then((data) => {});
+    } else {
+      let updatePostLikes = await axios
+        .put(
+          "/api/user/updatePostLikes",
+          {
+            id: _id,
+            likeCount: likeCount,
+            user_id: loggedInUserId.toString(),
+            isLiked: !liked,
+          },
+          { params: { currLocationPath: "" } }
+        )
+        .then((data) => {});
+    }
+
     setLiked(!liked);
   };
 
-  const handleShowComment = () => {
-    let len = commentList.length;
-    if (itemToShow + 3 >= len) {
-      setShowCommnentVisibility(false);
-    }
-    setItemToShow(itemToShow + 3);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleComment = async (e) => {
     if (e.key === "Enter") {
-      //console.log(comment.current.value)
       try {
-        let addComment = await axios.put("/api/user/addComment", {
-          post_id: _id,
-          user_name: loggedInUserName,
-          user_designation: user_designation,
-          comment: comment.current.value,
-        });
+        let addComment = {};
+
+        if (currLocationPath === "answer") {
+          addComment = await axios.put(
+            "/api/user/addComment",
+            {
+              post_id: _id,
+              user_name: loggedInUserName,
+              user_designation: user_designation,
+              comment: answer.current.value,
+            },
+            { params: { currLocationPath: "answer" } }
+          );
+          answer.current.value = "";
+        } else {
+          addComment = await axios.put(
+            "/api/user/addComment",
+            {
+              post_id: _id,
+              user_name: loggedInUserName,
+              user_designation: user_designation,
+              comment: comment.current.value,
+            },
+            { params: { currLocationPath: "" } }
+          );
+          comment.current.value = "";
+        }
+
         if (addComment) {
           setCommentList(addComment.data.commentList);
         }
-
-        comment.current.value = "";
       } catch (err) {
         console.log("Some Error occurred");
       }
@@ -128,14 +168,26 @@ function Postcard({ postValue }) {
       <div>
         {visibility ? (
           <div className="commentSection">
-            <input
-              type="text"
-              className="commentBox"
-              placeholder="Add Comment..."
-              ref={comment}
-              onKeyUpCapture={handleSubmit}
-            />
-            {currCommentList.slice(0, itemToShow).map((item, index) => {
+            {currLocationPath === "answer" ? (
+              <Textarea
+                type="text"
+                w={"95%"}
+                color={"white"}
+                className="commentBox"
+                placeholder="Add Answer"
+                ref={answer}
+                onKeyUpCapture={handleComment}
+              />
+            ) : (
+              <input
+                type="text"
+                className="commentBox"
+                placeholder="Add Comment..."
+                ref={comment}
+                onKeyUpCapture={handleComment}
+              />
+            )}
+            {currCommentList.map((item, index) => {
               return (
                 <CommentBoxCard
                   key={index}
@@ -146,14 +198,6 @@ function Postcard({ postValue }) {
                 />
               );
             })}
-            {currCommentList.length > 3 && showCommentVisibility ? (
-              <Button colorScheme="blue" ml={"30%"} onClick={handleShowComment}>
-                <ArrowDownwardIcon />
-                View More Comments{" "}
-              </Button>
-            ) : (
-              <></>
-            )}
           </div>
         ) : (
           <></>
