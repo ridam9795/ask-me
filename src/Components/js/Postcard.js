@@ -5,7 +5,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import CommentIcon from "@mui/icons-material/Comment";
 import CommentBoxCard from "./CommentBoxCard";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
 function Postcard({ postValue }) {
@@ -13,8 +13,6 @@ function Postcard({ postValue }) {
   const { postList, questionList, signedIn, currLocationPath } = SiteState();
   const [liked, setLiked] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [itemToShow, setItemToShow] = useState(3);
-  const [showCommentVisibility, setShowCommnentVisibility] = useState(true);
   const comment = useRef(null);
   const answer = useRef(null);
   let { likeCount, commentList } = postValue;
@@ -33,20 +31,13 @@ function Postcard({ postValue }) {
   //const {user}=SiteState();
   useEffect(() => {
     setLiked(lc);
-
-    let len = currCommentList.length;
-    if (itemToShow < len) {
-      setShowCommnentVisibility(true);
-    }
     setCommentList(commentList);
   }, [
-    itemToShow,
-    commentList,
     JSON.stringify(postList),
     JSON.stringify(questionList),
+    commentList,
     signedIn,
     lc,
-    showCommentVisibility,
   ]);
 
   const handleLike = async () => {
@@ -86,7 +77,7 @@ function Postcard({ postValue }) {
       try {
         let addComment = {};
 
-        if (currLocationPath === "answer") {
+        if (currLocationPath === "answer" && answer.current.value.length > 1) {
           addComment = await axios.put(
             "/api/user/addComment",
             {
@@ -116,7 +107,7 @@ function Postcard({ postValue }) {
           setCommentList(addComment.data.commentList);
         }
       } catch (err) {
-        console.log("Some Error occurred");
+        console.log("Some Error occurred", err);
       }
     }
   };
@@ -156,13 +147,21 @@ function Postcard({ postValue }) {
             style={{ color: liked ? "green" : "4fa8db" }}
             onClick={handleLike}
           />
-
-          <CommentIcon
-            style={{ marginLeft: "25px" }}
-            onClick={() => {
-              setVisibility(!visibility);
-            }}
-          />
+          {currLocationPath === "answer" ? (
+            <QuestionAnswerIcon
+              style={{ marginLeft: "25px" }}
+              onClick={() => {
+                setVisibility(!visibility);
+              }}
+            />
+          ) : (
+            <CommentIcon
+              style={{ marginLeft: "25px" }}
+              onClick={() => {
+                setVisibility(!visibility);
+              }}
+            />
+          )}
         </div>
       </div>
       <div>
@@ -194,7 +193,6 @@ function Postcard({ postValue }) {
                   comment={item.comment}
                   user_name={item.user_name}
                   designation={item.user_designation}
-                  setItemToShow={setItemToShow}
                 />
               );
             })}

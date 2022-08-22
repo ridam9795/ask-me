@@ -1,4 +1,4 @@
-const express=require("express");
+const express = require("express");
 const {
   registerUser,
   loginUser,
@@ -6,7 +6,7 @@ const {
   fetchPostList,
   updateLikes,
   addComment,
-  //createQuestion,
+  searchPost,
 } = require("../Controller/userController");
 const protect = require("../Middleware/authMiddleware");
 
@@ -15,9 +15,9 @@ const router = express.Router();
 router.route("/").post(registerUser).get(protect);
 router.route("/login").post(loginUser);
 router.route("/createpost").post(createPost);
-//router.route("/createquestion").post(createQuestion);
-router.route('/postList').get(fetchPostList);
-router.route('/updatePostLikes').put(updateLikes);
-router.route('/addComment').put(addComment)
+router.route("/postList").get(fetchPostList);
+router.route("/updatePostLikes").put(updateLikes);
+router.route("/addComment").put(addComment);
+router.route("/search").get(searchPost);
 
-module.exports=router
+module.exports = router;

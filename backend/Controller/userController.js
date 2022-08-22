@@ -207,6 +207,26 @@ const addComment = asyncHandler(async (req, res) => {
     res.status(404).send("Post Not Found");
   }
 });
+const searchPost = asyncHandler(async (req, res) => {
+  const { search } = req.query;
+
+  let post = [];
+  if (req.query.currLocationPath === "answer") {
+    post = await Question.find({
+      content: { $regex: req.query.search, $options: "i" },
+    }).sort({ createdAt: -1 });
+  } else if (req.query.currLocationPath === "") {
+    post = await Post.find({
+      content: { $regex: req.query.search, $options: "i" },
+    }).sort({ createdAt: -1 });
+  }
+
+  if (post) {
+    res.status(200).send(post);
+  } else {
+    res.status(400).send("Some error occured");
+  }
+});
 
 module.exports = {
   registerUser,
@@ -215,4 +235,5 @@ module.exports = {
   fetchPostList,
   updateLikes,
   addComment,
+  searchPost,
 };

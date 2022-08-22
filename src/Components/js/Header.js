@@ -1,9 +1,9 @@
-import {     Avatar, Button } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react';
-import 'react-profile-avatar/dist/index.css'
-import {BellIcon, ChevronDownIcon, EditIcon} from '@chakra-ui/icons'
-import '../css/Header.css';
-import ModalContent from './ModalContent';
+import { Avatar, Button } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import "react-profile-avatar/dist/index.css";
+import { BellIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
+import "../css/Header.css";
+import ModalContent from "./ModalContent";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import { SiteState } from "../../Context/AskMeProvider";
@@ -15,6 +15,7 @@ import {
   MenuDivider,
 } from "@chakra-ui/react";
 import Auth from "./Auth";
+import axios from "axios";
 function Header(props) {
   const location = useLocation();
 
@@ -29,6 +30,10 @@ function Header(props) {
     setUser,
     currLocationPath,
     setCurrLocationPath,
+    filteredPost,
+    setFilteredPost,
+    search,
+    setSearch,
   } = SiteState();
   const [openAuth, setOpenAuth] = useState(false);
   useEffect(() => {
@@ -46,7 +51,29 @@ function Header(props) {
     setSignedIn(false);
     setUser(null);
   };
-
+  const filter = async (e) => {
+    let val = e.target.value;
+    setSearch(val);
+    if (val.replaceAll(" ", "").length === 0) {
+      setFilteredPost([]);
+      return;
+    }
+    let searchedPost = [];
+    if (currLocationPath === "answer") {
+      searchedPost = await axios.get("/api/user/search", {
+        params: { search: e.target.value.trim(), currLocationPath: "answer" },
+      });
+    } else if (currLocationPath === "") {
+      searchedPost = await axios.get("/api/user/search", {
+        params: { search: e.target.value.trim(), currLocationPath: "" },
+      });
+    }
+    if (searchedPost.data.length > 0) {
+      setFilteredPost(searchedPost.data);
+    } else {
+      setFilteredPost([]);
+    }
+  };
   const openAuthModal = () => {
     setOpenAuth(true);
   };
@@ -102,7 +129,13 @@ function Header(props) {
         {/* <Link to="/" className='image'><img src={home} alt="home" /></Link>   */}
         {/* <EditIcon color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/> */}
         {/* <BellIcon  color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/>                 */}
-        <input type="text" className="Input" placeholder="search" />
+        <input
+          type="text"
+          className="Input"
+          placeholder="Search..."
+          onChange={filter}
+          value={search}
+        />
         <Button
           colorScheme={"red"}
           ml={"2%"}
@@ -154,4 +187,4 @@ function Header(props) {
   );
 }
 
-export default Header
+export default Header;

@@ -14,7 +14,12 @@ function Post() {
     setQuestionList,
     signedIn,
     currLocationPath,
+    filteredPost,
+    setFilteredPost,
+    search,
+    setSearch,
   } = SiteState();
+  const [postNotFound, setPostNotFound] = useState(false);
   //  console.log("curr: ", currLocationPath);
   const [loading, setLoading] = useState(false);
   const getList = async () => {
@@ -39,8 +44,28 @@ function Post() {
     //    console.log("fetched List",fetchedList.data)
   };
   useEffect(() => {
-    getList();
-  }, [postList.length, questionList.length, signedIn, currLocationPath]);
+    if (filteredPost.length > 0) {
+      setPostList(filteredPost);
+      setPostNotFound(false);
+    } else {
+      if (search.length > 0) {
+        setPostNotFound(true);
+      } else {
+        setPostNotFound(false);
+        getList();
+      }
+    }
+  }, [
+    postList.length,
+    questionList.length,
+    signedIn,
+    currLocationPath,
+    filteredPost.length,
+  ]);
+  useEffect(() => {
+    setSearch("");
+    setFilteredPost([]);
+  }, [currLocationPath]);
 
   return (
     <>
@@ -58,6 +83,17 @@ function Post() {
           >
             {" "}
             Login to see or add post
+          </Box>
+        ) : postNotFound ? (
+          <Box
+            ml={"85%"}
+            w={"100%"}
+            fontSize={"40px"}
+            color={"white"}
+            mt={"40%"}
+            fontWeight={"800"}
+          >
+            No post matches the search criteria
           </Box>
         ) : !loading && postList.length > 0 ? (
           postList.map((post, index) => {
