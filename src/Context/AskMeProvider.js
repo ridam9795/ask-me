@@ -32,7 +32,9 @@ const AskMeProvider = ({ children }) => {
   const [filteredPost, setFilteredPost] = useState([]);
   const [search, setSearch] = useState("");
   const [placeholder, setPlaceholder] = useState("");
-
+  const [tag, setTag] = useState([]);
+  const [searchPostTag, setSearchPostTag] = useState("");
+  const [badge, setBadge] = useState([]);
   function openModal(tab) {
     if (tab === "ask") {
       setIsPost(false);
@@ -79,6 +81,12 @@ const AskMeProvider = ({ children }) => {
         setFilteredPost,
         search,
         setSearch,
+        tag,
+        setTag,
+        searchPostTag,
+        setSearchPostTag,
+        badge,
+        setBadge,
       }}
     >
       {children}

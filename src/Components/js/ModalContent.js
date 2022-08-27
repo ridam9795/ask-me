@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import TagContainer from "./TagContainer";
 import {
   Tabs,
   TabList,
@@ -49,12 +50,19 @@ function ModalContent(props) {
     questionContent,
     categoryList,
     setQuestionContent,
+    tag,
+    setTag,
+    badge,
+    setBadge,
+    searchPostTag,
+    setSearchPostTag,
   } = SiteState();
   const [question, setQuestion] = useState(RichTextEditor.createEmptyValue());
   const [post, setPost] = useState(RichTextEditor.createEmptyValue());
-  const [tag, setTag] = useState([]);
-  const [search, setSearch] = useState("");
-  const [badge, setBadge] = useState([]);
+  // const [tag, setTag] = useState([]);
+  // const [searchPostTag, setSearchPostTag] = useState("");
+  // const [badge, setBadge] = useState([]);
+
   const toast = useToast();
   const handleSearch = (e) => {
     let val = e.target.value;
@@ -66,9 +74,9 @@ function ModalContent(props) {
         }
       });
       setTag(data);
-      setSearch(val);
+      setSearchPostTag(val);
     } else {
-      setSearch("");
+      setSearchPostTag("");
       setTag([]);
     }
   };
@@ -115,7 +123,7 @@ function ModalContent(props) {
             content: questionContent,
             likeCount: [],
             commentList: [],
-            tag: [],
+            tag: badge,
           },
           { params: { currLocationPath: "answer" } }
         );
@@ -124,7 +132,7 @@ function ModalContent(props) {
         setQuestion(RichTextEditor.createEmptyValue());
         closeModal();
         setBadge([]);
-        setSearch("");
+        setSearchPostTag("");
         setTag([]);
       } catch (err) {
         toast({
@@ -159,7 +167,7 @@ function ModalContent(props) {
             content: postContent,
             likeCount: [],
             commentList: [],
-            tag: [],
+            tag: badge,
           },
           { params: { currLocationPath: "" } }
         );
@@ -168,7 +176,7 @@ function ModalContent(props) {
         setPost(RichTextEditor.createEmptyValue());
         closeModal();
         setBadge([]);
-        setSearch("");
+        setSearchPostTag("");
         setTag([]);
       } catch (err) {
         toast({
@@ -188,6 +196,11 @@ function ModalContent(props) {
     });
     setBadge(filtertedBadge);
   };
+  const resetTags = () => {
+    setBadge([]);
+    setTag([]);
+    setSearchPostTag("");
+  };
 
   return (
     <div>
@@ -202,10 +215,14 @@ function ModalContent(props) {
           <Tabs defaultIndex={isPost ? 1 : 0}>
             <TabList>
               <Link to="/answer">
-                <Tab w={"365px"}>Add Question </Tab>
+                <Tab w={"365px"} onClick={resetTags}>
+                  Add Question{" "}
+                </Tab>
               </Link>
               <Link to="/">
-                <Tab w={"365px"}>Create Post</Tab>
+                <Tab w={"365px"} onClick={resetTags}>
+                  Create Post
+                </Tab>
               </Link>
             </TabList>
 
@@ -217,6 +234,7 @@ function ModalContent(props) {
                   value={question}
                   onChange={onAddQuestion}
                 />
+                <TagContainer />
                 <hr />
                 <Button
                   colorScheme={"#1d1d1d"}
@@ -245,56 +263,7 @@ function ModalContent(props) {
                   value={post}
                   onChange={onAddPost}
                 />
-                <Input
-                  type="text"
-                  placeholder="Add tag eg. Marketing,Science"
-                  mb={1}
-                  onChange={handleSearch}
-                  value={search}
-                  mt={"5"}
-                />
-
-                {badge.map((item, index) => {
-                  return (
-                    <Badge
-                      px={2}
-                      py={1}
-                      borderRadius="lg"
-                      m={1}
-                      mb={2}
-                      variant="solid"
-                      fontSize={12}
-                      colorScheme="whiteAlpha"
-                      cursor="pointer"
-                      key={index}
-                    >
-                      {item}
-                      <CloseIcon ml={"3"} onClick={() => handleRemove(index)} />
-                    </Badge>
-                  );
-                })}
-                {tag.map((item, index) => {
-                  return (
-                    <Box d={"flex"}>
-                      <Badge
-                        px={2}
-                        py={1}
-                        borderRadius="lg"
-                        m={1}
-                        mb={2}
-                        variant="solid"
-                        fontSize={12}
-                        colorScheme="whiteAlpha"
-                        cursor="pointer"
-                        key={index}
-                        onClick={() => handleBadge(item)}
-                      >
-                        {item}
-                      </Badge>
-                    </Box>
-                  );
-                })}
-
+                <TagContainer />
                 <hr />
 
                 <Button
