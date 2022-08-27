@@ -18,7 +18,6 @@ function CommentBoxCard({ comment, user_name, designation }) {
         <div style={{ width: "90%", height: "auto" }}>
           <p style={{ fontWeight: "750", fontSize: "18px" }}>{user_name} </p>
           <p style={{ fontSize: "12px" }}>{designation}</p>
-
           <p style={{ color: "black", fontWeight: "400" }}>{comment}</p>
         </div>
       </div>

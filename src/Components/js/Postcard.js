@@ -12,7 +12,9 @@ function Postcard({ postValue }) {
   const { _id, user, userName, content, designation } = postValue;
   const { postList, questionList, signedIn, currLocationPath } = SiteState();
   const [liked, setLiked] = useState(false);
-  const [visibility, setVisibility] = useState(false);
+  const [answerVisibility, setAnswerVisibility] = useState(false);
+  const [commentVisibility, setCommentVisibility] = useState(false);
+
   const comment = useRef(null);
   const answer = useRef(null);
   let { likeCount, commentList } = postValue;
@@ -151,23 +153,23 @@ function Postcard({ postValue }) {
             <QuestionAnswerIcon
               style={{ marginLeft: "25px" }}
               onClick={() => {
-                setVisibility(!visibility);
+                setAnswerVisibility(!answerVisibility);
               }}
             />
           ) : (
             <CommentIcon
               style={{ marginLeft: "25px" }}
               onClick={() => {
-                setVisibility(!visibility);
+                setCommentVisibility(!commentVisibility);
               }}
             />
           )}
         </div>
       </div>
       <div>
-        {visibility ? (
-          <div className="commentSection">
-            {currLocationPath === "answer" ? (
+        <div className="commentSection">
+          {currLocationPath === "answer" && answerVisibility ? (
+            <>
               <Textarea
                 type="text"
                 w={"95%"}
@@ -177,7 +179,22 @@ function Postcard({ postValue }) {
                 ref={answer}
                 onKeyUpCapture={handleComment}
               />
-            ) : (
+              {currCommentList.map((item, index) => {
+                return (
+                  <CommentBoxCard
+                    key={index}
+                    comment={item.comment}
+                    user_name={item.user_name}
+                    designation={item.user_designation}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <></>
+          )}
+          {currLocationPath == "" && commentVisibility ? (
+            <>
               <input
                 type="text"
                 className="commentBox"
@@ -185,21 +202,21 @@ function Postcard({ postValue }) {
                 ref={comment}
                 onKeyUpCapture={handleComment}
               />
-            )}
-            {currCommentList.map((item, index) => {
-              return (
-                <CommentBoxCard
-                  key={index}
-                  comment={item.comment}
-                  user_name={item.user_name}
-                  designation={item.user_designation}
-                />
-              );
-            })}
-          </div>
-        ) : (
-          <></>
-        )}
+              {currCommentList.map((item, index) => {
+                return (
+                  <CommentBoxCard
+                    key={index}
+                    comment={item.comment}
+                    user_name={item.user_name}
+                    designation={item.user_designation}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </div>
   );
