@@ -1,61 +1,55 @@
 .postCard {
-    background-color: #1d1d1d;
-        height: auto;
-    width: 100%;
-    margin-left: 83%;
-    position: relative;
-    margin-top: 10px;
-    border-radius: 10px;
-    color: white;
-    padding: 10px;
-    min-height: 100px;
+  background-color: #1d1d1d;
+  height: auto;
+  width: 100%;
+ 
+  position: relative;
+  margin-top: 10px;
+  border-radius: 10px;
+  color: white;
+  padding: 10px;
+  min-height: 100px;
 }
 .commentSection {
-    background-color: #1d1d1d;
-        height: auto;
-    width: 100%;
-    position: relative;
-    margin-left: 83%;
-    padding: 10px;
-    margin-top: -10px;
-border-radius: 0px 0px 10px 10px;
+  background-color: #1d1d1d;
+  height: auto;
+  width: 100%;
+  position: relative;
+  padding: 10px;
+  margin-top: -10px;
+  border-radius: 0px 0px 10px 10px;
 }
 
 .commentBox {
-
-    background-color: white;
-    margin: 10px;
-    width: 96%;
-    height: 40px;
-    border-radius: 30px;
-    color: black;
-        font-weight: 600;
-        font-size: 18px;
-    padding: 10px;
-    padding-left: 20px;
+  background-color: white;
+  margin: 10px;
+  width: 96%;
+  height: 40px;
+  border-radius: 30px;
+  color: black;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 10px;
+  padding-left: 20px;
 }
 .postCardHeader {
-    position: relative;
-    height: 50px;
-    display: flex;
+  position: relative;
+  height: 50px;
+  display: flex;
 }
 
 .postCardBody {
-
-    height: 60%;
-    margin-top: 10px;
-    padding: 20px;
-
+  height: 60%;
+  margin-top: 10px;
+  padding: 20px;
 }
 
 .postCardFooter {
-    position: sticky;
-    height: 50px;
-    width: 96%;
-    display: flex;
-        margin-left: 20px;
-        margin-top: 10px;
-            padding-top: 10px;
-    
+  position: sticky;
+  height: 50px;
+  width: 96%;
+  display: flex;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding-top: 10px;
 }
-    

@@ -31,10 +31,16 @@ const AskMeProvider = ({ children }) => {
   const [currLocationPath, setCurrLocationPath] = useState("");
   const [filteredPost, setFilteredPost] = useState([]);
   const [search, setSearch] = useState("");
-  const [placeholder, setPlaceholder] = useState("");
   const [tag, setTag] = useState([]);
   const [searchPostTag, setSearchPostTag] = useState("");
   const [badge, setBadge] = useState([]);
+  const [readPosts, setReadPosts] = useState([]);
+  const [readQuestions, setReadQuestions] = useState([]);
+  const [currTab, setCurrTab] = useState("post");
+  const [filteredReadPost, setFilteredReadPost] = useState([]);
+  const [filteredQuestion, setFilteredQuestion] = useState([]);
+  const [tabIdx, setTabIdx] = useState(0);
+
   function openModal(tab) {
     if (tab === "ask") {
       setIsPost(false);
@@ -87,6 +93,18 @@ const AskMeProvider = ({ children }) => {
         setSearchPostTag,
         badge,
         setBadge,
+        readPosts,
+        setReadPosts,
+        readQuestions,
+        setReadQuestions,
+        currTab,
+        setCurrTab,
+        filteredReadPost,
+        setFilteredReadPost,
+        filteredQuestion,
+        setFilteredQuestion,
+        tabIdx,
+        setTabIdx,
       }}
     >
       {children}

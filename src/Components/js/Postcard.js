@@ -8,16 +8,20 @@ import CommentBoxCard from "./CommentBoxCard";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
-function Postcard({ postValue }) {
-  const { _id, user, userName, content, designation } = postValue;
-  const { postList, questionList, signedIn, currLocationPath } = SiteState();
+function Postcard(props) {
+  const { _id, user, userName, content, designation } = props.postValue;
+  const { isCategory } = props.isCategory;
+  const { postList, questionList, signedIn, currLocationPath, currTab } =
+    SiteState();
   const [liked, setLiked] = useState(false);
   const [answerVisibility, setAnswerVisibility] = useState(false);
   const [commentVisibility, setCommentVisibility] = useState(false);
 
   const comment = useRef(null);
   const answer = useRef(null);
-  let { likeCount, commentList } = postValue;
+  const categoryComment = useRef(null);
+  const categoryAnswer = useRef(null);
+  let { likeCount, commentList } = props.postValue;
   let [currCommentList, setCommentList] = useState([]);
   let lc = false;
   let loggedInUserId = "";
@@ -43,7 +47,7 @@ function Postcard({ postValue }) {
   ]);
 
   const handleLike = async () => {
-    if (currLocationPath === "answer") {
+    if (currLocationPath === "answer" || currTab == "answer") {
       let updatePostLikes = await axios
         .put(
           "/api/user/updatePostLikes",
@@ -78,31 +82,61 @@ function Postcard({ postValue }) {
     if (e.key === "Enter") {
       try {
         let addComment = {};
-
-        if (currLocationPath === "answer" && answer.current.value.length > 1) {
-          addComment = await axios.put(
-            "/api/user/addComment",
-            {
-              post_id: _id,
-              user_name: loggedInUserName,
-              user_designation: user_designation,
-              comment: answer.current.value,
-            },
-            { params: { currLocationPath: "answer" } }
-          );
-          answer.current.value = "";
+        if (props.isCategory) {
+          if (currTab == "answer") {
+            addComment = await axios.put(
+              "/api/user/addComment",
+              {
+                post_id: _id,
+                user_name: loggedInUserName,
+                user_designation: user_designation,
+                comment: categoryAnswer.current.value,
+              },
+              { params: { currLocationPath: "answer" } }
+            );
+            categoryAnswer.current.value = "";
+          } else {
+            addComment = await axios.put(
+              "/api/user/addComment",
+              {
+                post_id: _id,
+                user_name: loggedInUserName,
+                user_designation: user_designation,
+                comment: categoryComment.current.value,
+              },
+              { params: { currLocationPath: "" } }
+            );
+            categoryComment.current.value = "";
+          }
         } else {
-          addComment = await axios.put(
-            "/api/user/addComment",
-            {
-              post_id: _id,
-              user_name: loggedInUserName,
-              user_designation: user_designation,
-              comment: comment.current.value,
-            },
-            { params: { currLocationPath: "" } }
-          );
-          comment.current.value = "";
+          if (
+            currLocationPath === "answer" &&
+            answer.current.value.length > 1
+          ) {
+            addComment = await axios.put(
+              "/api/user/addComment",
+              {
+                post_id: _id,
+                user_name: loggedInUserName,
+                user_designation: user_designation,
+                comment: answer.current.value,
+              },
+              { params: { currLocationPath: "answer" } }
+            );
+            answer.current.value = "";
+          } else {
+            addComment = await axios.put(
+              "/api/user/addComment",
+              {
+                post_id: _id,
+                user_name: loggedInUserName,
+                user_designation: user_designation,
+                comment: comment.current.value,
+              },
+              { params: { currLocationPath: "" } }
+            );
+            comment.current.value = "";
+          }
         }
 
         if (addComment) {
@@ -114,17 +148,17 @@ function Postcard({ postValue }) {
     }
   };
   return (
-    <div>
-      <div className="postCard">
-        <div className="postCardHeader">
-          <div style={{ width: "10%" }}>
+    <Box>
+      <Box className="postCard" ml={props.isCategory ? "0%" : "83%"}>
+        <Box className="postCardHeader">
+          <Box style={{ width: "10%" }}>
             <Avatar
               name={user ? userName : ""}
               src="https://bit.ly/broken-link"
               size={"sm"}
             />
-          </div>
-          <div style={{ width: "90%" }}>
+          </Box>
+          <Box style={{ width: "90%" }}>
             <p style={{ fontWeight: "750" }}>
               {user ? userName : "Anonymous"}{" "}
               <Button
@@ -138,13 +172,13 @@ function Postcard({ postValue }) {
               </Button>
             </p>
             <p style={{ fontSize: "12px" }}>{user ? designation : ""}</p>
-          </div>
-        </div>
-        <div
+          </Box>
+        </Box>
+        <Box
           className="postCardBody"
           dangerouslySetInnerHTML={{ __html: content }}
-        ></div>
-        <div className="postCardFooter">
+        ></Box>
+        <Box className="postCardFooter">
           <ThumbUpIcon
             style={{ color: liked ? "green" : "4fa8db" }}
             onClick={handleLike}
@@ -157,17 +191,42 @@ function Postcard({ postValue }) {
               }}
             />
           ) : (
+            <></>
+          )}
+          {currLocationPath === "" ? (
             <CommentIcon
               style={{ marginLeft: "25px" }}
               onClick={() => {
                 setCommentVisibility(!commentVisibility);
               }}
             />
+          ) : (
+            <></>
           )}
-        </div>
-      </div>
-      <div>
-        <div className="commentSection">
+          {props.isCategory && currTab == "post" ? (
+            <CommentIcon
+              style={{ marginLeft: "25px" }}
+              onClick={() => {
+                setCommentVisibility(!commentVisibility);
+              }}
+            />
+          ) : (
+            <></>
+          )}
+          {props.isCategory && currTab == "answer" ? (
+            <QuestionAnswerIcon
+              style={{ marginLeft: "25px" }}
+              onClick={() => {
+                setAnswerVisibility(!answerVisibility);
+              }}
+            />
+          ) : (
+            <></>
+          )}
+        </Box>
+      </Box>
+      <Box>
+        <Box className="commentSection" ml={props.isCategory ? "0%" : "83%"}>
           {currLocationPath === "answer" && answerVisibility ? (
             <>
               <Textarea
@@ -216,9 +275,58 @@ function Postcard({ postValue }) {
           ) : (
             <></>
           )}
-        </div>
-      </div>
-    </div>
+          {props.isCategory && commentVisibility && currTab == "post" ? (
+            <>
+              <input
+                type="text"
+                className="commentBox"
+                placeholder="Add Comment..."
+                ref={categoryComment}
+                onKeyUpCapture={handleComment}
+              />
+              {currCommentList.map((item, index) => {
+                return (
+                  <CommentBoxCard
+                    key={index}
+                    comment={item.comment}
+                    user_name={item.user_name}
+                    designation={item.user_designation}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <></>
+          )}
+
+          {props.isCategory && answerVisibility && currTab == "answer" ? (
+            <>
+              <Textarea
+                type="text"
+                w={"95%"}
+                color={"white"}
+                className="commentBox"
+                placeholder="Add Answer"
+                ref={categoryAnswer}
+                onKeyUpCapture={handleComment}
+              />
+              {currCommentList.map((item, index) => {
+                return (
+                  <CommentBoxCard
+                    key={index}
+                    comment={item.comment}
+                    user_name={item.user_name}
+                    designation={item.user_designation}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <></>
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

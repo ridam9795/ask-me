@@ -41,7 +41,6 @@ function Post() {
       setLoading(false);
     }
 
-    //    console.log("fetched List",fetchedList.data)
   };
   useEffect(() => {
     if (filteredPost.length > 0) {
@@ -61,6 +60,7 @@ function Post() {
     signedIn,
     currLocationPath,
     filteredPost.length,
+    search,
   ]);
   useEffect(() => {
     setSearch("");
@@ -97,7 +97,7 @@ function Post() {
           </Box>
         ) : !loading && postList.length > 0 ? (
           postList.map((post, index) => {
-            return <Postcard key={index} postValue={post} />;
+            return <Postcard key={index} postValue={post} isCategory={false} />;
           })
         ) : (
           <Box

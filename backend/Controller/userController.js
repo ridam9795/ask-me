@@ -227,6 +227,71 @@ const searchPost = asyncHandler(async (req, res) => {
     res.status(400).send("Some error occured");
   }
 });
+const filterPostCategory = asyncHandler(async (req, res) => {
+  const { selectedCategory } = req.query;
+  const post = await Post.find({
+    tag: {
+      $in: [selectedCategory],
+    },
+  });
+  if (post) {
+    res.status(200).send(post);
+  } else {
+    res.status(404).send("Some error occured while getting post");
+  }
+});
+const filterQuestionCategory = asyncHandler(async (req, res) => {
+  const { selectedCategory } = req.query;
+  const question = await Question.find({
+    tag: {
+      $in: [selectedCategory],
+    },
+  });
+  if (question) {
+    res.status(200).send(question);
+  } else {
+    res.status(404).send("Some error occured while getting questions");
+  }
+});
+const searchQuestionCategory = asyncHandler(async (req, res) => {
+  const { selectedCategory, searchValue } = req.query;
+  const question = await Question.find({
+    $and: [
+      {
+        tag: {
+          $in: [selectedCategory],
+        },
+      },
+      { content: { $regex: req.query.searchValue, $options: "i" } },
+    ],
+  });
+  if (question) {
+    //console.log(question);
+    res.status(200).send(question);
+  } else {
+    res.status(404).send("Some error occured while getting post");
+  }
+});
+const searchPostCategory = asyncHandler(async (req, res) => {
+  const { selectedCategory, searchValue } = req.query;
+  // console.log(selectedCategory + " " + searchValue);
+  const post = await Post.find({
+    $and: [
+      {
+        tag: {
+          $in: [selectedCategory],
+        },
+      },
+      { content: { $regex: req.query.searchValue, $options: "i" } },
+    ],
+  });
+  if (post) {
+    //  console.log(post);
+    res.status(200).send(post);
+  } else {
+    res.status(404).send("Some error occured while getting post");
+  }
+});
 
 module.exports = {
   registerUser,
@@ -236,4 +301,8 @@ module.exports = {
   updateLikes,
   addComment,
   searchPost,
+  filterPostCategory,
+  filterQuestionCategory,
+  searchQuestionCategory,
+  searchPostCategory,
 };

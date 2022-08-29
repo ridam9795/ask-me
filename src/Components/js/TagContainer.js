@@ -16,20 +16,7 @@ import { useToast } from "@chakra-ui/react";
 
 function TagContainer() {
   const {
-    postList,
-    setPostList,
-    questionList,
-    user,
-    setQuestionList,
-    modalIsOpen,
-    isPost,
-    closeModal,
-    postContent,
-    setPostContent,
-    signedIn,
-    questionContent,
     categoryList,
-    setQuestionContent,
     tag,
     setTag,
     badge,

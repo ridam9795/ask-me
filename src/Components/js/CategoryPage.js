@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/CategoryPage.css";
 import { Link, useParams } from "react-router-dom";
 import { Box, Button, Img, Text } from "@chakra-ui/react";
+import axios from "axios";
 import {
   Tabs,
   TabList,
@@ -11,12 +12,88 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { SiteState } from "../../Context/AskMeProvider";
+import Postcard from "./Postcard";
 
 function CategoryPage() {
   const [follow, setFollow] = useState(false);
   let { category } = useParams();
+  const [postNotFound, setPostNotFound] = useState(false);
+  const [quesNotFound, setQuesNotFound] = useState(false);
+
   category = category.replaceAll("-", " ");
-  const { categoryList, setCategoryList } = SiteState();
+  const {
+    categoryList,
+    setCategoryList,
+    readQuestions,
+    setReadQuestions,
+    readPosts,
+    setReadPosts,
+    currTab,
+    setCurrTab,
+    filteredReadPost,
+    setFilteredReadPost,
+    filteredQuestion,
+    setFilteredQuestion,
+    search,
+    setSearch,
+    tabIdx,
+    setTabIdx,
+  } = SiteState();
+
+  useEffect(() => {
+    if (filteredReadPost.length > 0) {
+      setReadPosts(filteredReadPost);
+      setPostNotFound(false);
+    } else {
+      if (search.length > 0) {
+        setPostNotFound(true);
+      } else {
+        setPostNotFound(false);
+        filterPost();
+      }
+    }
+    if (filteredQuestion.length > 0) {
+      setReadQuestions(filteredQuestion);
+      setQuesNotFound(false);
+    } else {
+      if (search.length > 0) {
+        setQuesNotFound(true);
+      } else {
+        setQuesNotFound(false);
+        filterQuestion();
+      }
+    }
+  }, [category, search, filteredReadPost.length, filteredQuestion.length]);
+  const filterPost = async () => {
+    try {
+      const postsForCurrentCategory = await axios.get(
+        "/api/user/filterPostCategory",
+        {
+          params: { selectedCategory: category },
+        }
+      );
+      if (postsForCurrentCategory) {
+        setReadPosts(postsForCurrentCategory.data);
+      }
+    } catch (err) {
+      console.log("error occured while finding post: ", err);
+    }
+  };
+  const filterQuestion = async (req, res) => {
+    try {
+      const QuestionsForCurrentCategory = await axios.get(
+        "/api/user/filterQuestionCategory",
+        {
+          params: { selectedCategory: category },
+        }
+      );
+      if (QuestionsForCurrentCategory) {
+        setReadQuestions(QuestionsForCurrentCategory.data);
+      }
+    } catch (err) {
+      console.log("error occured while finding question");
+    }
+  };
 
   const handleFollow = () => {
     const data = [];
@@ -29,6 +106,15 @@ function CategoryPage() {
     });
     setCategoryList(data);
   };
+  const setTab = (tab) => {
+    setCurrTab(tab);
+    if (tab == "answer") {
+      setTabIdx(1);
+    } else {
+      setTabIdx(0);
+    }
+    setSearch("");
+  };
 
   return (
     <>
@@ -40,9 +126,9 @@ function CategoryPage() {
         />
         <Box>
           <Text fontSize={"25px"} fontWeight={"500"}>
-            {category}{" "}
+            {category}
           </Text>
-          {categoryList.map((item) => {
+          {categoryList.map((item, index) => {
             if (item.name === category) {
               return (
                 <Button
@@ -50,6 +136,7 @@ function CategoryPage() {
                   h={"8"}
                   mt={"5"}
                   onClick={handleFollow}
+                  key={index}
                 >
                   {item.isFollowing ? "Following" : "Follow"}
                 </Button>
@@ -67,21 +154,66 @@ function CategoryPage() {
         w={"100%"}
         colorScheme={"red"}
         isLazy={"true"}
+        index={tabIdx}
       >
         <TabList>
-          <Tab color={"white"}>Read</Tab>
-          <Tab color={"white"}>Answers</Tab>
-          <Tab color={"white"}>Most Viewed Writers</Tab>
+          <Tab w={"50%"} color={"white"} onClick={() => setTab("post")}>
+            Read Posts
+          </Tab>
+          <Tab w={"50%"} color={"white"} onClick={() => setTab("answer")}>
+            Answers
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
-            <p>one!</p>
+            {!postNotFound ? (
+              readPosts.map((post) => {
+                return (
+                  <Box key={post._id}>
+                    <Postcard postValue={post} isCategory={true} />
+                  </Box>
+                );
+              })
+            ) : (
+              <Box color={"white"} mb={"90px"} mt={"80px"} fontSize={"30px"}>
+                NO POST MATCHES THE SEARCH CRITERIA IN THIS CATEGORY
+              </Box>
+            )}
+            {!postNotFound && readPosts.length == 0 ? (
+              <Box color={"white"} mb={"90px"} mt={"80px"} fontSize={"30px"}>
+                NO POST UNDER GIVEN CATEGORY
+              </Box>
+            ) : (
+              <Box></Box>
+            )}
           </TabPanel>
           <TabPanel>
-            <p>two!</p>
-          </TabPanel>
-          <TabPanel>
-            <p>three!</p>
+            {!quesNotFound ? (
+              readQuestions.map((post) => {
+                return (
+                  <Box key={post._id}>
+                    <Postcard postValue={post} isCategory={true} />
+                  </Box>
+                );
+              })
+            ) : (
+              <Box color={"white"} mb={"90px"} mt={"80px"} fontSize={"30px"}>
+                NO QUESTION MATCHES THE SEARCH CRITERIA IN THIS CATEGORY
+              </Box>
+            )}
+            {!quesNotFound && readQuestions.length == 0 ? (
+              <Box
+                color={"white"}
+                mb={"90px"}
+                mt={"80px"}
+                fontSize={"30px"}
+                w={"120%"}
+              >
+                NO QUESTION UNDER GIVEN CATEGORY
+              </Box>
+            ) : (
+              <Box></Box>
+            )}
           </TabPanel>
         </TabPanels>
       </Tabs>

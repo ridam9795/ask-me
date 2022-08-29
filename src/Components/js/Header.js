@@ -34,6 +34,14 @@ function Header(props) {
     setFilteredPost,
     search,
     setSearch,
+    currTab,
+    setCurrTab,
+    filteredReadPost,
+    setFilteredReadPost,
+    filteredQuestion,
+    setFilteredQuestion,
+    tabIdx,
+    setTabIdx,
   } = SiteState();
   const [openAuth, setOpenAuth] = useState(false);
   useEffect(() => {
@@ -45,6 +53,9 @@ function Header(props) {
   }, []);
   useEffect(() => {
     setCurrLocationPath(location.pathname.slice(1));
+    setSearch("");
+    setCurrTab("post");
+    setTabIdx(0);
   }, [location.pathname]);
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
@@ -54,8 +65,12 @@ function Header(props) {
   const filter = async (e) => {
     let val = e.target.value;
     setSearch(val);
+    // console.log("currLocation: ", currLocationPath);
+
     if (val.replaceAll(" ", "").length === 0) {
       setFilteredPost([]);
+      setFilteredReadPost([]);
+      setFilteredQuestion([]);
       return;
     }
     let searchedPost = [];
@@ -63,15 +78,54 @@ function Header(props) {
       searchedPost = await axios.get("/api/user/search", {
         params: { search: e.target.value.trim(), currLocationPath: "answer" },
       });
+      if (searchedPost.data.length > 0) {
+        setFilteredPost(searchedPost.data);
+      } else {
+        setFilteredPost([]);
+      }
     } else if (currLocationPath === "") {
       searchedPost = await axios.get("/api/user/search", {
         params: { search: e.target.value.trim(), currLocationPath: "" },
       });
-    }
-    if (searchedPost.data.length > 0) {
-      setFilteredPost(searchedPost.data);
+      if (searchedPost.data.length > 0) {
+        setFilteredPost(searchedPost.data);
+      } else {
+        setFilteredPost([]);
+      }
     } else {
-      setFilteredPost([]);
+      let currCat = currLocationPath.split("/")[1];
+      if (currTab == "answer") {
+        const searchQuestionCategory = await axios.get(
+          "/api/user/searchQuestionCategory",
+          {
+            params: {
+              selectedCategory: currCat,
+              searchValue: e.target.value.trim(),
+            },
+          }
+        );
+        if (searchQuestionCategory.data.length > 0) {
+          setFilteredQuestion(searchQuestionCategory.data);
+        } else {
+          setFilteredQuestion([]);
+        }
+      } else {
+        //   console.log("posTab");
+        const searchPostCategory = await axios.get(
+          "/api/user/searchPostCategory",
+          {
+            params: {
+              selectedCategory: currCat,
+              searchValue: e.target.value.trim(),
+            },
+          }
+        );
+        if (searchPostCategory.data.length > 0) {
+          setFilteredReadPost(searchPostCategory.data);
+        } else {
+          setFilteredReadPost([]);
+        }
+      }
     }
   };
   const openAuthModal = () => {
