@@ -27,7 +27,7 @@ const AskMeProvider = ({ children }) => {
   const [questionList, setQuestionList] = useState([]);
   const [categoryList, setCategoryList] = useState(sidePanelList);
   const [signedIn, setSignedIn] = useState(false);
-  const [user, setUser] = useState();
+  const [loggedInUser, setLoggedInUser] = useState({});
   const [currLocationPath, setCurrLocationPath] = useState("");
   const [filteredPost, setFilteredPost] = useState([]);
   const [search, setSearch] = useState("");
@@ -40,6 +40,7 @@ const AskMeProvider = ({ children }) => {
   const [filteredReadPost, setFilteredReadPost] = useState([]);
   const [filteredQuestion, setFilteredQuestion] = useState([]);
   const [tabIdx, setTabIdx] = useState(0);
+  const [following, setFollowing] = useState(false);
 
   function openModal(tab) {
     if (tab === "ask") {
@@ -79,8 +80,8 @@ const AskMeProvider = ({ children }) => {
         setCategoryList,
         signedIn,
         setSignedIn,
-        user,
-        setUser,
+        loggedInUser,
+        setLoggedInUser,
         currLocationPath,
         setCurrLocationPath,
         filteredPost,
@@ -105,6 +106,8 @@ const AskMeProvider = ({ children }) => {
         setFilteredQuestion,
         tabIdx,
         setTabIdx,
+        following,
+        setFollowing,
       }}
     >
       {children}

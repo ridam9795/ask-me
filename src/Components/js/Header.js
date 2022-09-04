@@ -26,8 +26,8 @@ function Header(props) {
     signedIn,
     setSignedIn,
     openModal,
-    user,
-    setUser,
+    loggedInUser,
+    setLoggedInUser,
     currLocationPath,
     setCurrLocationPath,
     filteredPost,
@@ -47,7 +47,7 @@ function Header(props) {
   useEffect(() => {
     const data = localStorage.getItem("userInfo");
     if (data) {
-      setUser(JSON.parse(data));
+      setLoggedInUser(JSON.parse(data));
       setSignedIn(true);
     }
   }, []);
@@ -60,7 +60,7 @@ function Header(props) {
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
     setSignedIn(false);
-    setUser(null);
+    setLoggedInUser(null);
   };
   const filter = async (e) => {
     let val = e.target.value;
@@ -205,12 +205,14 @@ function Header(props) {
             <MenuButton w={"60px"} ml={"5%"} righticon={<ChevronDownIcon />}>
               <Avatar
                 src="https://bit.ly/broken-link"
-                name={user ? user.name : ""}
+                name={loggedInUser ? loggedInUser.name : ""}
                 size={"md"}
               />
             </MenuButton>
             <MenuList>
-              <MenuItem fontWeight={"800"}>{user ? user.email : ""}</MenuItem>
+              <MenuItem fontWeight={"800"}>
+                {loggedInUser ? loggedInUser.email : ""}
+              </MenuItem>
               <MenuDivider />
               <MenuItem fontWeight={"500"}>Profile</MenuItem>
               <MenuItem fontWeight={"500"} onClick={handleLogout}>

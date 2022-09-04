@@ -21,6 +21,8 @@ const registerUser = asyncHandler(async (req, res) => {
     email: signUpEmail,
     password: signUpPass,
     designation: designation,
+    followers: [],
+    following: [],
   });
   if (user) {
     res.status(201).json({
@@ -61,7 +63,6 @@ const loginUser = asyncHandler(async (req, res) => {
 const createPost = asyncHandler(async (req, res) => {
   const { id, userName, tag, content, likeCount, commentList, designation } =
     req.body;
-
   const { currLocationPath } = req.query;
 
   if (!id) {
@@ -115,9 +116,9 @@ const fetchPostList = asyncHandler(async (req, res) => {
   const { currLocationPath } = req.query;
   let postList = {};
   if (currLocationPath === "answer") {
-    postList = await Question.find().sort({ createdAt: -1 });
+    postList = await Question.find().populate("user").sort({ createdAt: -1 });
   } else {
-    postList = await Post.find().sort({ createdAt: -1 });
+    postList = await Post.find().populate("user").sort({ createdAt: -1 });
   }
   if (postList) {
     res.status(200).send(postList);
@@ -130,20 +131,16 @@ const updateLikes = asyncHandler(async (req, res) => {
   let lc = likeCount.includes(user_id);
   const { currLocationPath } = req.query;
 
-  // console.log("lc>>>>>>"+lc+" isLiked >>>> "+isLiked );
   let post = "";
   if (isLiked) {
-    //  console.log("--------------liked--------------")
     if (!lc) {
       likeCount.push(user_id);
     }
   } else if (!isLiked) {
-    // console.log("-------------------unliked---------------------")
     likeCount = likeCount.filter((lid) => {
       return lid !== user_id;
     });
   }
-  // console.log("curr List: "+likeCount+" post: "+id);
   if (currLocationPath === "answer") {
     post = await Question.findOneAndUpdate(
       { _id: id },
@@ -292,6 +289,71 @@ const searchPostCategory = asyncHandler(async (req, res) => {
     res.status(404).send("Some error occured while getting post");
   }
 });
+const followUser = asyncHandler(async (req, res) => {
+  const { loggedInUser, followedUser } = req.body;
+
+  const updateFollowingList = await User.findOneAndUpdate(
+    { _id: loggedInUser },
+    {
+      $addToSet: {
+        following: followedUser,
+      },
+    }
+  );
+  const updateFollowerList = await User.findOneAndUpdate(
+    { _id: followedUser },
+    {
+      $addToSet: {
+        followers: loggedInUser,
+      },
+    }
+  );
+  if (updateFollowerList) {
+    res.status(200).send("Updated...");
+  } else {
+    res
+      .status(400)
+      .send("Some error occured while updating follower and following list");
+  }
+});
+const unfollowUser = asyncHandler(async (req, res) => {
+  const { loggedInUser, followedUser } = req.body;
+  const updateFollowingList = await User.updateOne(
+    {
+      _id: loggedInUser,
+    },
+    {
+      $pull: {
+        following: req.body.followedUser,
+      },
+    }
+  );
+  const updateFollowerList = await User.updateOne(
+    {
+      _id: followedUser,
+    },
+    {
+      $pull: {
+        followers: req.body.loggedInUser,
+      },
+    }
+  );
+  if (updateFollowerList && updateFollowingList) {
+    res.status(200).send("Updated..");
+  } else {
+    res.status(404).send("Some Error occurred");
+  }
+});
+
+const fetchUsers = asyncHandler(async (req, res) => {
+  let { loggedInUser } = req.query;
+  const user = await User.find({ _id: loggedInUser });
+  if (user) {
+    res.status(200).send(user);
+  } else {
+    res.status(400).send("Some Error occured while searching user");
+  }
+});
 
 module.exports = {
   registerUser,
@@ -305,4 +367,7 @@ module.exports = {
   filterQuestionCategory,
   searchQuestionCategory,
   searchPostCategory,
+  followUser,
+  unfollowUser,
+  fetchUsers,
 };

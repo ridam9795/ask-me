@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { React, useEffect, useState } from "react";
 import { SiteState } from "../../Context/AskMeProvider";
 import CreatePost from "../CreatePost";
@@ -18,30 +18,15 @@ function Post() {
     setFilteredPost,
     search,
     setSearch,
+    loggedInUser,
   } = SiteState();
   const [postNotFound, setPostNotFound] = useState(false);
+  const [followStatus, setFollowStatus] = useState(false);
+  const [currLoggedUser, setCurrLoggedUser] = useState({});
   //  console.log("curr: ", currLocationPath);
   const [loading, setLoading] = useState(false);
-  const getList = async () => {
-    let fetchedList = [];
-    //  console.log("currLocation: ", currLocationPath);
-    if (currLocationPath === "") {
-      fetchedList = await axios.get("/api/user/postList", {
-        params: { currLocationPath: "" },
-      });
-    } else if (currLocationPath === "answer") {
-      fetchedList = await axios.get("/api/user/postList", {
-        params: { currLocationPath: "answer" },
-      });
-    }
-    if (fetchedList.data.length === 0) {
-      setLoading(true);
-    } else {
-      setPostList(fetchedList.data);
-      setLoading(false);
-    }
+  const toast = useToast();
 
-  };
   useEffect(() => {
     if (filteredPost.length > 0) {
       setPostList(filteredPost);
@@ -61,11 +46,47 @@ function Post() {
     currLocationPath,
     filteredPost.length,
     search,
+    followStatus,
   ]);
   useEffect(() => {
     setSearch("");
     setFilteredPost([]);
   }, [currLocationPath]);
+
+  const getList = async () => {
+    let fetchedList = {};
+    try {
+      if (loggedInUser) {
+        //let parsedLoggedUser = JSON.parse(loggedInUser);
+        //console.log(parsedLoggedUser);
+        let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
+          params: { loggedInUser: loggedInUser._id },
+        });
+        if (currLoggedUserInfo.data.length > 0) {
+          setCurrLoggedUser(currLoggedUserInfo.data);
+        }
+      }
+      if (currLocationPath === "") {
+        fetchedList = await axios.get("/api/user/postList", {
+          params: { currLocationPath: "" },
+        });
+      } else if (currLocationPath === "answer") {
+        fetchedList = await axios.get("/api/user/postList", {
+          params: { currLocationPath: "answer" },
+        });
+      }
+      if (fetchedList["data"] != null) {
+        if (fetchedList.data.length === 0) {
+          setLoading(true);
+        } else {
+          setPostList(fetchedList.data);
+          setLoading(false);
+        }
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <>
@@ -97,7 +118,16 @@ function Post() {
           </Box>
         ) : !loading && postList.length > 0 ? (
           postList.map((post, index) => {
-            return <Postcard key={index} postValue={post} isCategory={false} />;
+            return (
+              <Postcard
+                key={index}
+                postValue={post}
+                isCategory={false}
+                setFollowStatus={setFollowStatus}
+                followStatus={followStatus}
+                currLoggedUser={currLoggedUser}
+              />
+            );
           })
         ) : (
           <Box

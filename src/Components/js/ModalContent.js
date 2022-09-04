@@ -39,7 +39,7 @@ function ModalContent(props) {
     postList,
     setPostList,
     questionList,
-    user,
+    loggedInUser,
     setQuestionList,
     modalIsOpen,
     isPost,
@@ -117,9 +117,9 @@ function ModalContent(props) {
         const currQuestionPost = await axios.post(
           "/api/user/createpost",
           {
-            id: user._id,
-            userName: user.name,
-            designation: user.designation,
+            id: loggedInUser._id,
+            userName: loggedInUser.name,
+            designation: loggedInUser.designation,
             content: questionContent,
             likeCount: [],
             commentList: [],
@@ -161,9 +161,9 @@ function ModalContent(props) {
         const currPost = await axios.post(
           "/api/user/createpost",
           {
-            id: user._id,
-            userName: user.name,
-            designation: user.designation,
+            id: loggedInUser._id,
+            userName: loggedInUser.name,
+            designation: loggedInUser.designation,
             content: postContent,
             likeCount: [],
             commentList: [],

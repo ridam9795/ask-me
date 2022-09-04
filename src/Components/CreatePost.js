@@ -12,7 +12,7 @@ function CreatePost(props) {
     setIsPost,
     openModal,
     closeModal,
-    user,
+    loggedInUser,
   } = SiteState();
 
   return (
@@ -26,7 +26,7 @@ function CreatePost(props) {
         }}
       >
         <Avatar
-          name={user ? user.name : ""}
+          name={loggedInUser ? loggedInUser.name : ""}
           src="https://bit.ly/broken-link"
           size={"sm"}
         />

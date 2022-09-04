@@ -31,87 +31,81 @@ function Auth({openAuth,setOpenAuth,closeAuthModal}) {
  const [signUpConfPass,setSignUpConfPass]=useState("");
  const [signInEmail,setSignInEmail]=useState("");
  const [signInPass,setSignInPass]=useState("");
- const {signedIn,setSignedIn,user,setUser}=SiteState();
- const [designation,setDesignation]=useState("");
+ const { signedIn, setSignedIn, setLoggedInUser } = SiteState();
+ const [designation, setDesignation] = useState("");
 
-const proxy="http:localhost:5000/"
- const toast=useToast();
-axios.defaults.baseURL = 'http://localhost:5000';
+ const proxy = "http:localhost:5000/";
+ const toast = useToast();
+ axios.defaults.baseURL = "http://localhost:5000";
 
- const handleLogin=async(e)=>{
-  console.log("Login",signInEmail,signInPass,"e: ",e)
-  if(!signInEmail || !signInPass ){
-   toast({
-        title: "Please Fill all the Feilds",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-  }
-
-  try{
-
-  const {data} = await axios.post('/api/user/login',{signInEmail,signInPass})
-  console.log("returned data",data)
-  setSignedIn(true);
-  localStorage.setItem("userInfo",JSON.stringify(data));
-  setUser(data);
-  
-  }catch(error){
+ const handleLogin = async (e) => {
+   if (!signInEmail || !signInPass) {
      toast({
-        title: "Error Occured!",
-        status: error.response.data.message,
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+       title: "Please Fill all the Feilds",
+       status: "warning",
+       duration: 5000,
+       isClosable: true,
+       position: "bottom",
+     });
+   }
 
-  }
- }
- const handleSignup= async ()=>{
-  console.log("Sign up",signUpEmail,signUpPass,signUpName,signUpConfPass,designation)
-  if(!signUpEmail || !signUpPass || !signUpName || !signUpConfPass ){
-   toast({
-        title: "Please Fill all the Feilds",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-  }
-  if( signUpPass!==signUpConfPass ){
+   try {
+     const { data } = await axios.post("/api/user/login", {
+       signInEmail,
+       signInPass,
+     });
+     setSignedIn(true);
+     localStorage.setItem("userInfo", JSON.stringify(data));
+     setLoggedInUser(data);
+   } catch (error) {
      toast({
-        title: "password and confirm password must be same",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-  }
-  try{
-
-  const {data} = await axios.post('/api/user/',{signUpName,signUpEmail,signUpPass,designation})
-  console.log("returned data",data)
-  setSignedIn(true);
-  localStorage.setItem("userInfo",JSON.stringify(data));
-  setUser(data);
-  }catch(error){
+       title: "Error Occured!",
+       status: error.response.data.message,
+       duration: 5000,
+       isClosable: true,
+       position: "bottom",
+     });
+   }
+ };
+ const handleSignup = async () => {
+   if (!signUpEmail || !signUpPass || !signUpName || !signUpConfPass) {
      toast({
-        title: "Error Occured!",
-        status: error.response.data.message,
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-
-  }
- 
-
-
-
-
- }
+       title: "Please Fill all the Feilds",
+       status: "warning",
+       duration: 5000,
+       isClosable: true,
+       position: "bottom",
+     });
+   }
+   if (signUpPass !== signUpConfPass) {
+     toast({
+       title: "password and confirm password must be same",
+       status: "warning",
+       duration: 5000,
+       isClosable: true,
+       position: "bottom",
+     });
+   }
+   try {
+     const { data } = await axios.post("/api/user/", {
+       signUpName,
+       signUpEmail,
+       signUpPass,
+       designation,
+     });
+     setSignedIn(true);
+     localStorage.setItem("userInfo", JSON.stringify(data));
+     setLoggedInUser(data);
+   } catch (error) {
+     toast({
+       title: "Error Occured!",
+       status: error.response.data.message,
+       duration: 5000,
+       isClosable: true,
+       position: "bottom",
+     });
+   }
+ };
 
   return (
     

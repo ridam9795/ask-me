@@ -93,7 +93,7 @@ function TagContainer() {
       })}
       {tag.map((item, index) => {
         return (
-          <Box d={"flex"}>
+          <Box d={"flex"} key={index}>
             <Badge
               px={2}
               py={1}
@@ -104,7 +104,6 @@ function TagContainer() {
               fontSize={12}
               colorScheme="whiteAlpha"
               cursor="pointer"
-              key={index}
               onClick={() => handleBadge(item)}
             >
               {item}

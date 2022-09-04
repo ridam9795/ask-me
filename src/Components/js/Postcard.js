@@ -11,11 +11,18 @@ import axios from "axios";
 function Postcard(props) {
   const { _id, user, userName, content, designation } = props.postValue;
   const { isCategory } = props.isCategory;
-  const { postList, questionList, signedIn, currLocationPath, currTab } =
-    SiteState();
+  const {
+    postList,
+    questionList,
+    signedIn,
+    currLocationPath,
+    currTab,
+    loggedInUser,
+  } = SiteState();
   const [liked, setLiked] = useState(false);
   const [answerVisibility, setAnswerVisibility] = useState(false);
   const [commentVisibility, setCommentVisibility] = useState(false);
+  const [following, setFollowing] = useState(false);
 
   const comment = useRef(null);
   const answer = useRef(null);
@@ -27,14 +34,19 @@ function Postcard(props) {
   let loggedInUserId = "";
   let loggedInUserName = "";
   let user_designation = "";
+
   if (localStorage.getItem("userInfo")) {
-    let currUser = JSON.parse(localStorage.getItem("userInfo"));
-    loggedInUserName = currUser.name;
-    loggedInUserId = currUser._id;
-    user_designation = currUser.designation;
+    // let currUser = JSON.parse(localStorage.getItem("userInfo"));
+    loggedInUserName = loggedInUser.name;
+    loggedInUserId = loggedInUser._id;
+    user_designation = loggedInUser.designation;
     lc = likeCount.includes(loggedInUserId.toString());
   }
   //const {user}=SiteState();
+
+  useEffect(() => {
+    checkFollowedUser();
+  }, [props.followStatus, currLocationPath, loggedInUser._id]);
   useEffect(() => {
     setLiked(lc);
     setCommentList(commentList);
@@ -45,6 +57,16 @@ function Postcard(props) {
     signedIn,
     lc,
   ]);
+  const checkFollowedUser = async () => {
+    let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
+      params: { loggedInUser: loggedInUser._id },
+    });
+
+    setFollowing(false);
+    if (currLoggedUserInfo.data[0].following.includes(user._id)) {
+      setFollowing(true);
+    }
+  };
 
   const handleLike = async () => {
     if (currLocationPath === "answer" || currTab == "answer") {
@@ -143,8 +165,29 @@ function Postcard(props) {
           setCommentList(addComment.data.commentList);
         }
       } catch (err) {
-        console.log("Some Error occurred", err);
+        console.log(err.message);
       }
+    }
+  };
+  const handleFollow = async () => {
+    try {
+      if (!following) {
+        const followUser = await axios.put("/api/user/follow", {
+          loggedInUser: loggedInUserId,
+          followedUser: user._id,
+        });
+        setFollowing(true);
+      } else {
+        const unfollowUser = await axios.put("/api/user/unfollow", {
+          loggedInUser: loggedInUserId,
+          followedUser: user._id,
+        });
+        setFollowing(false);
+      }
+
+      props.setFollowStatus(!props.followStatus);
+    } catch (err) {
+      console.log(err.message);
     }
   };
   return (
@@ -160,16 +203,21 @@ function Postcard(props) {
           </Box>
           <Box style={{ width: "90%" }}>
             <p style={{ fontWeight: "750" }}>
-              {user ? userName : "Anonymous"}{" "}
-              <Button
-                colorScheme={"#1d1d1d"}
-                color="#4fa8db"
-                fontSize={"15px"}
-                height="5"
-                mb={"1"}
-              >
-                Follow
-              </Button>
+              {user ? userName : "Anonymous"}
+              {user._id != loggedInUserId && currLocationPath !== "answer" ? (
+                <Button
+                  colorScheme={"#1d1d1d"}
+                  color="#4fa8db"
+                  fontSize={"15px"}
+                  height="5"
+                  mb={"1"}
+                  onClick={handleFollow}
+                >
+                  {following ? "Following" : "Follow"}
+                </Button>
+              ) : (
+                <></>
+              )}
             </p>
             <p style={{ fontSize: "12px" }}>{user ? designation : ""}</p>
           </Box>

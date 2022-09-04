@@ -11,6 +11,9 @@ const {
   filterQuestionCategory,
   searchPostCategory,
   searchQuestionCategory,
+  followUser,
+  unfollowUser,
+  fetchUsers,
 } = require("../Controller/userController");
 const protect = require("../Middleware/authMiddleware");
 
@@ -27,6 +30,9 @@ router.route("/filterPostCategory").get(filterPostCategory);
 router.route("/filterQuestionCategory").get(filterQuestionCategory);
 router.route("/searchPostCategory").get(searchPostCategory);
 router.route("/searchQuestionCategory").get(searchQuestionCategory);
+router.route("/follow").put(followUser);
+router.route("/unfollow").put(unfollowUser);
+router.route("/fetchUsers").get(fetchUsers);
 
 
 
