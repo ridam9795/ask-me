@@ -214,7 +214,9 @@ function Header(props) {
                 {loggedInUser ? loggedInUser.email : ""}
               </MenuItem>
               <MenuDivider />
-              <MenuItem fontWeight={"500"}>Profile</MenuItem>
+              <Link to={`/profile/${loggedInUser._id}`}>
+                <MenuItem fontWeight={"500"}>Profile</MenuItem>
+              </Link>
               <MenuItem fontWeight={"500"} onClick={handleLogout}>
                 Logout
               </MenuItem>

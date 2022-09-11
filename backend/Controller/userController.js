@@ -40,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { signInEmail, signInPass } = req.body;
-  //  console.log(signInEmail+" "+signInPass)
+  console.log(signInEmail + " " + signInPass);
   if (!signInEmail || !signInPass) {
     res.status(401);
     throw new Error("Please fill all the deatils");
@@ -230,7 +230,7 @@ const filterPostCategory = asyncHandler(async (req, res) => {
     tag: {
       $in: [selectedCategory],
     },
-  });
+  }).exclude("password");
   if (post) {
     res.status(200).send(post);
   } else {
@@ -354,6 +354,18 @@ const fetchUsers = asyncHandler(async (req, res) => {
     res.status(400).send("Some Error occured while searching user");
   }
 });
+const fetchUserProfileData = asyncHandler(async (req, res) => {
+  let { user_id } = req.query;
+  const user = await User.findOne({ _id: user_id })
+    .populate("followers")
+    .populate("following")
+    .select("-password");
+  if (user) {
+    res.status(200).send(user);
+  } else {
+    res.status(400).send("Some error occured while finding user");
+  }
+});
 
 module.exports = {
   registerUser,
@@ -370,4 +382,5 @@ module.exports = {
   followUser,
   unfollowUser,
   fetchUsers,
+  fetchUserProfileData,
 };

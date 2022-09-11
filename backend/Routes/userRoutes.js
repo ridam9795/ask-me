@@ -14,6 +14,7 @@ const {
   followUser,
   unfollowUser,
   fetchUsers,
+  fetchUserProfileData,
 } = require("../Controller/userController");
 const protect = require("../Middleware/authMiddleware");
 
@@ -33,6 +34,7 @@ router.route("/searchQuestionCategory").get(searchQuestionCategory);
 router.route("/follow").put(followUser);
 router.route("/unfollow").put(unfollowUser);
 router.route("/fetchUsers").get(fetchUsers);
+router.route("/fetchUserProfileData").get(fetchUserProfileData);
 
 
 

@@ -8,6 +8,7 @@ import CommentBoxCard from "./CommentBoxCard";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
+import { Link } from "react-router-dom";
 function Postcard(props) {
   const { _id, user, userName, content, designation } = props.postValue;
   const { isCategory } = props.isCategory;
@@ -203,7 +204,9 @@ function Postcard(props) {
           </Box>
           <Box style={{ width: "90%" }}>
             <p style={{ fontWeight: "750" }}>
-              {user ? userName : "Anonymous"}
+              <Link to={`/profile/${user._id}`}>
+                {user ? userName.toUpperCase() : "Anonymous"}{" "}
+              </Link>
               {user._id != loggedInUserId && currLocationPath !== "answer" ? (
                 <Button
                   colorScheme={"#1d1d1d"}

@@ -6,6 +6,8 @@ import CategoryPage from "./Components/js/CategoryPage";
 import Post from "./Components/js/Post";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import ProfilePage from "./Components/js/ProfilePage";
+import { Box } from "@chakra-ui/react";
 
 function App() {
   useEffect(() => {
@@ -26,6 +28,11 @@ function App() {
             <Route path="/answer" element={<Post />} />
           </Routes>
         </div>
+        <Box className="profile">
+          <Routes>
+            <Route path="/profile/:userID" element={<ProfilePage />} />
+          </Routes>
+        </Box>
       </div>
     </>
   );
