@@ -5,16 +5,27 @@ const User = require("../Model/userModel");
 const Comment = require("../Model/commentModel");
 const Question = require("../Model/questionModel");
 const registerUser = asyncHandler(async (req, res) => {
-  const { signUpName, signUpEmail, signUpPass, designation } = req.body;
-  if (!signUpEmail || !signUpPass || !signUpName || !designation) {
+  const { signUpName, signUpEmail, signUpPass, signUpConfPass, designation } =
+    req.body;
+  if (
+    !signUpEmail ||
+    !signUpPass ||
+    !signUpName ||
+    !signUpConfPass ||
+    !designation
+  ) {
     // console.log(signUpEmail+" "+signUpPass+" "+signUpName+" "+designation)
-    res.status(400);
-    throw new Error("Please Enter all the fields");
+    res.status(401).send("Please Enter all the fields");
+    return;
+  }
+  if (signUpConfPass !== signUpPass) {
+    res.status(401).send("Password and confirm password does not match");
+    return;
   }
   const userExists = await User.findOne({ email: signUpEmail });
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    res.status(401).send("User already exists");
+    return;
   }
   const user = await User.create({
     name: signUpName,
@@ -33,8 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
       designation: designation,
     });
   } else {
-    res.status(400);
-    throw new Error("Failed to create the User");
+    res.status(401).send("Failed to create the User");
   }
 });
 
@@ -42,8 +52,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { signInEmail, signInPass } = req.body;
   console.log(signInEmail + " " + signInPass);
   if (!signInEmail || !signInPass) {
-    res.status(401);
-    throw new Error("Please fill all the deatils");
+    res.status(401).send("Please fill all the deatils");
   }
   const user = await User.findOne({ email: signInEmail });
   if (user && (await user.matchPassword(signInPass))) {
@@ -56,8 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
       designation: user.designation,
     });
   } else {
-    res.status(401);
-    throw new Error("Invalid Email or password");
+    res.status(401).send("Invalid Email or password");
   }
 });
 const createPost = asyncHandler(async (req, res) => {
