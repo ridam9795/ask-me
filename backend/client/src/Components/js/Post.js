@@ -23,7 +23,6 @@ function Post() {
   const [postNotFound, setPostNotFound] = useState(false);
   const [followStatus, setFollowStatus] = useState(false);
   const [currLoggedUser, setCurrLoggedUser] = useState({});
-  //  console.log("curr: ", currLocationPath);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -57,8 +56,6 @@ function Post() {
     let fetchedList = {};
     try {
       if (loggedInUser) {
-        //let parsedLoggedUser = JSON.parse(loggedInUser);
-        //console.log(parsedLoggedUser);
         let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
           params: { loggedInUser: loggedInUser._id },
         });
