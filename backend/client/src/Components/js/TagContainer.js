@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Button,
-  Badge,
-  Input,
-} from "@chakra-ui/react";
+import { Badge, Input } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Box } from "@chakra-ui/react";
 import { SiteState } from "../../Context/AskMeProvider";

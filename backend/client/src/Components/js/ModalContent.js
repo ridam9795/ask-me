@@ -7,8 +7,6 @@ import {
   Tab,
   TabPanel,
   Button,
-  Badge,
-  Input,
 } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
 import Modal from "react-modal";

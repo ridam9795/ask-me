@@ -238,7 +238,7 @@ const filterPostCategory = asyncHandler(async (req, res) => {
     tag: {
       $in: [selectedCategory],
     },
-  }).exclude("password");
+  });
   if (post) {
     res.status(200).send(post);
   } else {

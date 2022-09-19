@@ -2,7 +2,6 @@ import { Avatar, Box, Button, Textarea } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import "../css/PostCard.css";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import CommentIcon from "@mui/icons-material/Comment";
 import CommentBoxCard from "./CommentBoxCard";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
@@ -11,7 +10,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 function Postcard(props) {
   const { _id, user, userName, content, designation } = props.postValue;
-  const { isCategory } = props.isCategory;
   const {
     postList,
     questionList,

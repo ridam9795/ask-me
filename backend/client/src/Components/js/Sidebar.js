@@ -10,7 +10,7 @@ function Sidebar() {
     color: "red",
   };
 
-  const { categoryList, setCategoryList } = SiteState();
+  const { categoryList } = SiteState();
 
   return (
     <Box className="sidebar">
