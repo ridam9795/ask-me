@@ -56,8 +56,6 @@ function Post() {
     let fetchedList = {};
     try {
       if (loggedInUser) {
-        //let parsedLoggedUser = JSON.parse(loggedInUser);
-        //console.log(parsedLoggedUser);
         let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
           params: { loggedInUser: loggedInUser._id },
         });
