@@ -30,17 +30,13 @@ function Header(props) {
     setLoggedInUser,
     currLocationPath,
     setCurrLocationPath,
-    filteredPost,
     setFilteredPost,
     search,
     setSearch,
     currTab,
     setCurrTab,
-    filteredReadPost,
     setFilteredReadPost,
-    filteredQuestion,
     setFilteredQuestion,
-    tabIdx,
     setTabIdx,
   } = SiteState();
   const [openAuth, setOpenAuth] = useState(false);
@@ -110,7 +106,6 @@ function Header(props) {
           setFilteredQuestion([]);
         }
       } else {
-        //   console.log("posTab");
         const searchPostCategory = await axios.get(
           "/api/user/searchPostCategory",
           {

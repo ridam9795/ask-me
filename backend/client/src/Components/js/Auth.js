@@ -33,18 +33,18 @@ const customStyles = {
     zIndex: 100,
   },
 };
-function Auth({ openAuth, setOpenAuth, closeAuthModal }) {
+function Auth({ openAuth, closeAuthModal }) {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPass, setSignUpPass] = useState("");
   const [signUpName, setSignUpName] = useState("");
   const [signUpConfPass, setSignUpConfPass] = useState("");
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPass, setSignInPass] = useState("");
-  const { signedIn, setSignedIn, setLoggedInUser } = SiteState();
+  const { setSignedIn, setLoggedInUser } = SiteState();
   const [designation, setDesignation] = useState("");
 
   const toast = useToast();
-  axios.defaults.baseURL = "http://localhost:5000";
+  axios.defaults.baseURL = "https://mern-ask-me-app.herokuapp.com/";
 
   const handleLogin = async (e) => {
     try {
