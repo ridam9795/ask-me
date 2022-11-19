@@ -9,6 +9,7 @@ import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
 import { Link } from "react-router-dom";
 function Postcard(props) {
+  console.log("postcard trgger");
   const { _id, user, userName, content, designation } = props.postValue;
   const {
     postList,
@@ -39,32 +40,24 @@ function Postcard(props) {
     loggedInUserName = loggedInUser.name;
     loggedInUserId = loggedInUser._id;
     user_designation = loggedInUser.designation;
-    lc = likeCount.includes(loggedInUserId.toString());
+    //lc = likeCount.includes(loggedInUserId.toString());
   }
   //const {user}=SiteState();
 
   useEffect(() => {
-    checkFollowedUser();
-  }, [props.followStatus, currLocationPath, loggedInUser._id]);
-  useEffect(() => {
     setLiked(lc);
     setCommentList(commentList);
-  }, [
-    JSON.stringify(postList),
-    JSON.stringify(questionList),
-    commentList,
-    signedIn,
-    lc,
-  ]);
+    checkFollowedUser();
+  }, []);
   const checkFollowedUser = async () => {
     let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
       params: { loggedInUser: loggedInUser._id },
     });
 
-    setFollowing(false);
-    if (currLoggedUserInfo.data[0].following.includes(user._id)) {
-      setFollowing(true);
-    }
+    //setFollowing(false);
+    // if (currLoggedUserInfo.data[0].following.includes(user._id)) {
+    //   setFollowing(true);
+    // }
   };
 
   const handleLike = async () => {
@@ -171,20 +164,10 @@ function Postcard(props) {
   const handleFollow = async () => {
     try {
       if (!following) {
-        const followUser = await axios.put("/api/user/follow", {
-          loggedInUser: loggedInUserId,
-          followedUser: user._id,
-        });
         setFollowing(true);
       } else {
-        const unfollowUser = await axios.put("/api/user/unfollow", {
-          loggedInUser: loggedInUserId,
-          followedUser: user._id,
-        });
         setFollowing(false);
       }
-
-      props.setFollowStatus(!props.followStatus);
     } catch (err) {
       console.log(err.message);
     }
@@ -379,4 +362,4 @@ function Postcard(props) {
   );
 }
 
-export default Postcard;
+export default React.memo(Postcard);

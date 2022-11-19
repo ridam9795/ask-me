@@ -1,10 +1,10 @@
 import { Avatar, Button } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-profile-avatar/dist/index.css";
 import { BellIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import "../css/Header.css";
 import ModalContent from "./ModalContent";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import { SiteState } from "../../Context/AskMeProvider";
 import {
@@ -18,7 +18,7 @@ import Auth from "./Auth";
 import axios from "axios";
 function Header(props) {
   const location = useLocation();
-
+  const searchRef = useRef();
   let activeStyle = {
     borderBottom: "3px solid red",
   };
@@ -39,89 +39,25 @@ function Header(props) {
     setFilteredQuestion,
     setTabIdx,
   } = SiteState();
+  const navigate = useNavigate();
   const [openAuth, setOpenAuth] = useState(false);
-  useEffect(() => {
+  useState(() => {
     const data = localStorage.getItem("userInfo");
     if (data) {
       setLoggedInUser(JSON.parse(data));
       setSignedIn(true);
     }
-  }, []);
-  useEffect(() => {
-    setCurrLocationPath(location.pathname.slice(1));
-    setSearch("");
-    setCurrTab("post");
-    setTabIdx(0);
-  }, [location.pathname]);
+  });
+  console.log("signed in", signedIn);
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
     setSignedIn(false);
     setLoggedInUser(null);
+    navigate("/");
   };
-  const filter = async (e) => {
-    let val = e.target.value;
-    setSearch(val);
-    // console.log("currLocation: ", currLocationPath);
-
-    if (val.replaceAll(" ", "").length === 0) {
-      setFilteredPost([]);
-      setFilteredReadPost([]);
-      setFilteredQuestion([]);
-      return;
-    }
-    let searchedPost = [];
-    if (currLocationPath === "answer") {
-      searchedPost = await axios.get("/api/user/search", {
-        params: { search: e.target.value.trim(), currLocationPath: "answer" },
-      });
-      if (searchedPost.data.length > 0) {
-        setFilteredPost(searchedPost.data);
-      } else {
-        setFilteredPost([]);
-      }
-    } else if (currLocationPath === "") {
-      searchedPost = await axios.get("/api/user/search", {
-        params: { search: e.target.value.trim(), currLocationPath: "" },
-      });
-      if (searchedPost.data.length > 0) {
-        setFilteredPost(searchedPost.data);
-      } else {
-        setFilteredPost([]);
-      }
-    } else {
-      let currCat = currLocationPath.split("/")[1];
-      if (currTab == "answer") {
-        const searchQuestionCategory = await axios.get(
-          "/api/user/searchQuestionCategory",
-          {
-            params: {
-              selectedCategory: currCat,
-              searchValue: e.target.value.trim(),
-            },
-          }
-        );
-        if (searchQuestionCategory.data.length > 0) {
-          setFilteredQuestion(searchQuestionCategory.data);
-        } else {
-          setFilteredQuestion([]);
-        }
-      } else {
-        const searchPostCategory = await axios.get(
-          "/api/user/searchPostCategory",
-          {
-            params: {
-              selectedCategory: currCat,
-              searchValue: e.target.value.trim(),
-            },
-          }
-        );
-        if (searchPostCategory.data.length > 0) {
-          setFilteredReadPost(searchPostCategory.data);
-        } else {
-          setFilteredReadPost([]);
-        }
-      }
-    }
+  const handleSearch = async (e) => {
+    console.log(e.target.value);
+    setSearch(e.target.value);
   };
   const openAuthModal = () => {
     setOpenAuth(true);
@@ -182,9 +118,10 @@ function Header(props) {
           type="text"
           className="Input"
           placeholder="Search..."
-          onChange={filter}
+          onChange={handleSearch}
           value={search}
         />
+
         <Button
           colorScheme={"red"}
           ml={"2%"}
@@ -240,4 +177,4 @@ function Header(props) {
   );
 }
 
-export default Header;
+export default React.memo(Header);

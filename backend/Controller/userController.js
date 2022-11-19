@@ -58,10 +58,8 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(signInPass))) {
     //  console.log("desig: "+  (user.designation))
     res.status(200).json({
-      _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
       designation: user.designation,
     });
   } else {
@@ -121,17 +119,21 @@ const createPost = asyncHandler(async (req, res) => {
 });
 
 const fetchPostList = asyncHandler(async (req, res) => {
-  const { currLocationPath } = req.query;
-  let postList = {};
-  if (currLocationPath === "answer") {
-    postList = await Question.find().populate("user").sort({ createdAt: -1 });
-  } else {
-    postList = await Post.find().populate("user").sort({ createdAt: -1 });
-  }
+  const postList = await Post.find().populate("user").sort({ createdAt: -1 });
   if (postList) {
-    res.status(200).send(postList);
+    res.status(201).send(postList);
   } else {
-    res.status(400).send("No post to show");
+    res.status(400).send("Error occured in fetching post list");
+  }
+});
+const fetchQuestionList = asyncHandler(async (req, res) => {
+  const questionList = await Question.find()
+    .populate("user")
+    .sort({ createdAt: -1 });
+  if (questionList) {
+    res.status(201).send(questionList);
+  } else {
+    res.status(400).send("Error occured in fetching question list");
   }
 });
 const updateLikes = asyncHandler(async (req, res) => {
@@ -380,6 +382,7 @@ module.exports = {
   loginUser,
   createPost,
   fetchPostList,
+  fetchQuestionList,
   updateLikes,
   addComment,
   searchPost,

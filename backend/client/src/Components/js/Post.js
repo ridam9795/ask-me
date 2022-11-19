@@ -1,87 +1,81 @@
-import { Box, useToast } from "@chakra-ui/react";
-import { React, useEffect, useState } from "react";
+import { Box, Text, useToast } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { SiteState } from "../../Context/AskMeProvider";
 import CreatePost from "../CreatePost";
 import Postcard from "./Postcard";
 import axios from "axios";
 import { Spinner } from "@chakra-ui/react";
-
+import { useCallback } from "react";
+import React from "react";
+import { useLocation } from "react-router";
 function Post() {
+  console.log("Post js triggeres");
   const {
     postList,
     setPostList,
     questionList,
     setQuestionList,
+    search,
     signedIn,
     currLocationPath,
     filteredPost,
     setFilteredPost,
-    search,
-    setSearch,
     loggedInUser,
   } = SiteState();
   const [postNotFound, setPostNotFound] = useState(false);
-  const [followStatus, setFollowStatus] = useState(false);
   const [currLoggedUser, setCurrLoggedUser] = useState({});
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-
+  const location = useLocation();
   useEffect(() => {
-    if (filteredPost.length > 0) {
-      setPostList(filteredPost);
-      setPostNotFound(false);
-    } else {
-      if (search.length > 0) {
-        setPostNotFound(true);
-      } else {
-        setPostNotFound(false);
-        getList();
-      }
-    }
-  }, [
-    postList.length,
-    questionList.length,
-    signedIn,
-    currLocationPath,
-    filteredPost.length,
-    search,
-    followStatus,
-  ]);
-  useEffect(() => {
-    setSearch("");
-    setFilteredPost([]);
-  }, [currLocationPath]);
-
-  const getList = async () => {
-    let fetchedList = {};
+    fetchPostList();
+    fetchQuestionList();
+  }, []);
+  const fetchPostList = async () => {
     try {
-      if (loggedInUser) {
-        let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
-          params: { loggedInUser: loggedInUser._id },
-        });
-        if (currLoggedUserInfo.data.length > 0) {
-          setCurrLoggedUser(currLoggedUserInfo.data);
-        }
-      }
-      if (currLocationPath === "") {
-        fetchedList = await axios.get("/api/user/postList", {
-          params: { currLocationPath: "" },
-        });
-      } else if (currLocationPath === "answer") {
-        fetchedList = await axios.get("/api/user/postList", {
-          params: { currLocationPath: "answer" },
-        });
-      }
-      if (fetchedList["data"] != null) {
-        if (fetchedList.data.length === 0) {
-          setLoading(true);
-        } else {
-          setPostList(fetchedList.data);
-          setLoading(false);
-        }
+      let fetchPost;
+      fetchPost = await axios.get("/api/user/postList");
+      if (fetchPost.data) {
+        console.log("post data: ", fetchPost.data);
+        setPostList(fetchPost.data);
       }
     } catch (err) {
       console.log(err.message);
+    }
+  };
+  const fetchQuestionList = async () => {
+    try {
+      let fetchQuestion;
+      fetchQuestion = await axios.get("/api/user/questionList");
+
+      if (fetchQuestionList) {
+        console.log("Question data: ", fetchQuestion.data);
+        setQuestionList(fetchQuestion.data);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const getCurrentList = () => {
+    let path = location.pathname;
+    console.log(
+      "getCurrentList path ",
+      path,
+      " search: ",
+      search,
+      " list ",
+      postList
+    );
+
+    if (path == "/") {
+      return postList.filter((post) => {
+        return post.content.toLowerCase().includes(search.toLowerCase());
+      });
+    } else if (path == "/answer") {
+      return questionList.filter((question) => {
+        return question.content.toLowerCase().includes(search.toLowerCase());
+      });
     }
   };
 
@@ -89,53 +83,31 @@ function Post() {
     <>
       <CreatePost />
       <div style={{ marginTop: "100px" }}>
-        {!signedIn ? (
-          <Box
-            height={"340px"}
-            ml={"90%"}
-            w={"100%"}
-            fontSize={"40px"}
-            color={"white"}
-            mt={"40%"}
-            fontWeight={"800"}
-          >
-            {" "}
-            Login to see or add post
-          </Box>
-        ) : postNotFound ? (
-          <Box
-            ml={"85%"}
-            w={"100%"}
-            fontSize={"40px"}
-            color={"white"}
-            mt={"40%"}
-            fontWeight={"800"}
-          >
-            No post matches the search criteria
-          </Box>
-        ) : !loading && postList.length > 0 ? (
-          postList.map((post, index) => {
+        {getCurrentList().length > 0 ? (
+          getCurrentList().map((post) => {
             return (
               <Postcard
-                key={index}
+                key={post._id}
                 postValue={post}
                 isCategory={false}
-                setFollowStatus={setFollowStatus}
-                followStatus={followStatus}
                 currLoggedUser={currLoggedUser}
               />
             );
           })
         ) : (
           <Box
-            ml={"129%"}
-            w={"100%"}
-            fontSize={"40px"}
-            color={"white"}
-            mt={"40%"}
-            fontWeight={"800"}
+            justifyContent={"center"}
+            position={"absolute"}
+            w={"50%"}
+            ml={"33%"}
+            fontSize={"30px"}
+            mt={"10%"}
           >
-            <Spinner />
+            {location.pathname === "/" ? (
+              <h1> NO POST MATCHES THE SEARCH CRITERIA</h1>
+            ) : (
+              <h1>NO QUESTION MATCHES THE SEARCH CRITERIA</h1>
+            )}
           </Box>
         )}
       </div>
@@ -143,4 +115,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default React.memo(Post);
