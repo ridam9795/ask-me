@@ -54,8 +54,8 @@ function Auth({ openAuth, closeAuthModal }) {
         signInPass,
       });
       setSignedIn(true);
+      setLoggedInUser(JSON.stringify(data));
       localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoggedInUser(data);
       toast({
         title: "Sign in Successful",
         status: "success",
@@ -83,8 +83,8 @@ function Auth({ openAuth, closeAuthModal }) {
         designation,
       });
       setSignedIn(true);
+      setLoggedInUser(JSON.stringify(data));
       localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoggedInUser(data);
       toast({
         title: "Account created",
         status: "success",

@@ -9,7 +9,6 @@ import { useCallback } from "react";
 import React from "react";
 import { useLocation } from "react-router";
 function Post() {
-  console.log("Post js triggeres");
   const {
     postList,
     setPostList,
@@ -17,26 +16,23 @@ function Post() {
     setQuestionList,
     search,
     signedIn,
-    currLocationPath,
-    filteredPost,
-    setFilteredPost,
-    loggedInUser,
   } = SiteState();
   const [postNotFound, setPostNotFound] = useState(false);
   const [currLoggedUser, setCurrLoggedUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [postUpdated, setPostUpdated] = useState(false);
   const toast = useToast();
   const location = useLocation();
   useEffect(() => {
     fetchPostList();
     fetchQuestionList();
   }, []);
+
   const fetchPostList = async () => {
     try {
       let fetchPost;
       fetchPost = await axios.get("/api/user/postList");
       if (fetchPost.data) {
-        console.log("post data: ", fetchPost.data);
         setPostList(fetchPost.data);
       }
     } catch (err) {
@@ -49,7 +45,6 @@ function Post() {
       fetchQuestion = await axios.get("/api/user/questionList");
 
       if (fetchQuestionList) {
-        console.log("Question data: ", fetchQuestion.data);
         setQuestionList(fetchQuestion.data);
       }
     } catch (err) {
@@ -59,14 +54,6 @@ function Post() {
 
   const getCurrentList = () => {
     let path = location.pathname;
-    console.log(
-      "getCurrentList path ",
-      path,
-      " search: ",
-      search,
-      " list ",
-      postList
-    );
 
     if (path == "/") {
       return postList.filter((post) => {
@@ -83,15 +70,18 @@ function Post() {
     <>
       <CreatePost />
       <div style={{ marginTop: "100px" }}>
-        {getCurrentList().length > 0 ? (
-          getCurrentList().map((post) => {
+        {signedIn && getCurrentList().length > 0 ? (
+          getCurrentList().map((post, index) => {
             return (
-              <Postcard
-                key={post._id}
-                postValue={post}
-                isCategory={false}
-                currLoggedUser={currLoggedUser}
-              />
+              <div key={index}>
+                <Postcard
+                  postUpdated={postUpdated}
+                  setPostUpdated={setPostUpdated}
+                  postValue={post}
+                  isCategory={false}
+                  currLoggedUser={currLoggedUser}
+                />
+              </div>
             );
           })
         ) : (
@@ -104,9 +94,14 @@ function Post() {
             mt={"10%"}
           >
             {location.pathname === "/" ? (
-              <h1> NO POST MATCHES THE SEARCH CRITERIA</h1>
+              <Text ml={"23%"} color={"white"}>
+                {" "}
+                NO POST TO SHOW
+              </Text>
             ) : (
-              <h1>NO QUESTION MATCHES THE SEARCH CRITERIA</h1>
+              <Text ml={"20%"} color={"white"}>
+                NO QUESTION TO SHOW
+              </Text>
             )}
           </Box>
         )}

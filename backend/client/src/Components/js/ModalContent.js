@@ -115,9 +115,7 @@ function ModalContent(props) {
         const currQuestionPost = await axios.post(
           "/api/user/createpost",
           {
-            id: loggedInUser._id,
-            userName: loggedInUser.name,
-            designation: loggedInUser.designation,
+            loggedInUser: loggedInUser,
             content: questionContent,
             likeCount: [],
             commentList: [],
@@ -145,7 +143,6 @@ function ModalContent(props) {
   };
   const addPost = async (e) => {
     e.preventDefault();
-
     if (!signedIn) {
       toast({
         title: "Please Sign in to add post.",
@@ -159,9 +156,7 @@ function ModalContent(props) {
         const currPost = await axios.post(
           "/api/user/createpost",
           {
-            id: loggedInUser._id,
-            userName: loggedInUser.name,
-            designation: loggedInUser.designation,
+            loggedInUser: loggedInUser,
             content: postContent,
             likeCount: [],
             commentList: [],
@@ -188,7 +183,6 @@ function ModalContent(props) {
     }
   };
   const handleRemove = (idx) => {
-    console.log("idx", idx);
     const filtertedBadge = badge.filter((item, index) => {
       return index !== idx;
     });

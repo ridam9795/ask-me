@@ -67,11 +67,10 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 const createPost = asyncHandler(async (req, res) => {
-  const { id, userName, tag, content, likeCount, commentList, designation } =
-    req.body;
+  const { loggedInUser, tag, content, likeCount, commentList } = req.body;
   const { currLocationPath } = req.query;
 
-  if (!id) {
+  if (!loggedInUser) {
     res.status(401);
     throw new Error("Please login to create post");
   }
@@ -82,35 +81,35 @@ const createPost = asyncHandler(async (req, res) => {
   let post = {};
   if (currLocationPath === "answer") {
     post = await Question.create({
-      user: id,
-      userName: userName,
+      user: loggedInUser._id,
+      userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
       commentList: commentList,
       tag: tag,
-      designation: designation,
+      designation: loggedInUser.designation,
     });
   } else {
     post = await Post.create({
-      user: id,
-      userName: userName,
+      user: loggedInUser._id,
+      userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
       commentList: commentList,
       tag: tag,
-      designation: designation,
+      designation: loggedInUser.designation,
     });
   }
 
   if (post) {
     res.status(200).json({
-      user: id,
-      userName: userName,
+      user: loggedInUser._id,
+      userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
       commentList: commentList,
       tag: tag,
-      designation: designation,
+      designation: loggedInUser.designation,
     });
   } else {
     res.status(400);
@@ -376,6 +375,17 @@ const fetchUserProfileData = asyncHandler(async (req, res) => {
     res.status(400).send("Some error occured while finding user");
   }
 });
+const fetchUserDetail = asyncHandler(async (req, res) => {
+  const { email } = req.query;
+  console.log("query ", req.query);
+  const user = await User.findOne({ email: email }).select("-password");
+  if (user) {
+    console.log("user: ", user);
+    res.status(200).send(user);
+  } else {
+    res.status(400).send("Some error occured in fetching user");
+  }
+});
 
 module.exports = {
   registerUser,
@@ -394,4 +404,5 @@ module.exports = {
   unfollowUser,
   fetchUsers,
   fetchUserProfileData,
+  fetchUserDetail,
 };

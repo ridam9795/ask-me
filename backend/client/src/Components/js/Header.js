@@ -17,7 +17,6 @@ import {
 import Auth from "./Auth";
 import axios from "axios";
 function Header(props) {
-  const location = useLocation();
   const searchRef = useRef();
   let activeStyle = {
     borderBottom: "3px solid red",
@@ -28,35 +27,41 @@ function Header(props) {
     openModal,
     loggedInUser,
     setLoggedInUser,
-    currLocationPath,
-    setCurrLocationPath,
-    setFilteredPost,
     search,
     setSearch,
-    currTab,
-    setCurrTab,
-    setFilteredReadPost,
-    setFilteredQuestion,
-    setTabIdx,
   } = SiteState();
   const navigate = useNavigate();
   const [openAuth, setOpenAuth] = useState(false);
-  useState(() => {
+  useEffect(() => {
     const data = localStorage.getItem("userInfo");
     if (data) {
-      setLoggedInUser(JSON.parse(data));
-      setSignedIn(true);
+      fetchUser(data);
+    } else {
+      openAuthModal();
     }
-  });
-  console.log("signed in", signedIn);
+  }, [signedIn]);
+  const fetchUser = async (userInfo) => {
+    userInfo = JSON.parse(userInfo);
+    try {
+      const user = await axios.get("/api/user/fetchUserDetail", {
+        params: {
+          email: userInfo.email,
+        },
+      });
+      if (user.data) {
+        setLoggedInUser(user.data);
+        setSignedIn(true);
+      }
+    } catch (err) {
+      console.log("Error occured while fetching user", err);
+    }
+  };
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
     setSignedIn(false);
     setLoggedInUser(null);
-    navigate("/");
   };
   const handleSearch = async (e) => {
-    console.log(e.target.value);
     setSearch(e.target.value);
   };
   const openAuthModal = () => {
