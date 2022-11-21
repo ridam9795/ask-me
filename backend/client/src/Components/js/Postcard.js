@@ -7,12 +7,14 @@ import CommentBoxCard from "./CommentBoxCard";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 function Postcard(props) {
   const { _id, user, content, designation } = props.postValue;
 
   const {
     postList,
+    setPostList,
+    setQuestionList,
     questionList,
     signedIn,
     currLocationPath,
@@ -20,6 +22,7 @@ function Postcard(props) {
     loggedInUser,
     setLoggedInUser,
   } = SiteState();
+  const location = useLocation();
 
   const [liked, setLiked] = useState(false);
   const [answerVisibility, setAnswerVisibility] = useState(false);
@@ -39,6 +42,9 @@ function Postcard(props) {
 
   //const {user}=SiteState();
   useEffect(() => {
+    console.log("post ", props.postValue);
+    setLiked(likeCount.includes(loggedInUser._id));
+    console.log(likeCount.includes(loggedInUser._id));
     if (loggedInUser.following) {
       setFollowing(loggedInUser.following.includes(user._id));
     }
@@ -49,7 +55,37 @@ function Postcard(props) {
   }, []);
 
   const handleLike = async () => {
-    if (currLocationPath === "answer" || currTab == "answer") {
+    console.log("currLocation ", location.pathname);
+    if (location.pathname === "/answer" || currTab == "answer") {
+      if (liked) {
+        let updatedQuestionList = [];
+        questionList.map((question) => {
+          if (question._id == _id) {
+            updatedQuestionList.push({
+              ...question,
+              likeCount: likeCount.filter((like) => {
+                return like != loggedInUser._id;
+              }),
+            });
+          } else {
+            updatedQuestionList.push(question);
+          }
+        });
+        setQuestionList(updatedQuestionList);
+      } else {
+        let updatedPostList = [];
+        questionList.map((post) => {
+          if (post._id == _id) {
+            updatedPostList.push({
+              ...post,
+              likeCount: [...post.likeCount, loggedInUser._id],
+            });
+          } else {
+            updatedPostList.push(post);
+          }
+        });
+        setQuestionList(updatedPostList);
+      }
       let updatePostLikes = await axios
         .put(
           "/api/user/updatePostLikes",
@@ -63,6 +99,36 @@ function Postcard(props) {
         )
         .then((data) => {});
     } else {
+      if (liked) {
+        let updatedPost = [];
+        postList.map((post) => {
+          if (post._id == _id) {
+            updatedPost.push({
+              ...post,
+              likeCount: likeCount.filter((like) => {
+                return like != loggedInUser._id;
+              }),
+            });
+          } else {
+            updatedPost.push(post);
+          }
+        });
+        setPostList(updatedPost);
+      } else {
+        let updatedPost = [];
+        postList.map((post) => {
+          if (post._id == _id) {
+            updatedPost.push({
+              ...post,
+              likeCount: [...post.likeCount, loggedInUser._id],
+            });
+          } else {
+            updatedPost.push(post);
+          }
+        });
+        setPostList(updatedPost);
+      }
+
       let updatePostLikes = await axios
         .put(
           "/api/user/updatePostLikes",
