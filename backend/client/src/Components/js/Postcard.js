@@ -9,7 +9,8 @@ import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
 import { Link } from "react-router-dom";
 function Postcard(props) {
-  const { _id, user, userName, content, designation } = props.postValue;
+  const { _id, user, content, designation } = props.postValue;
+
   const {
     postList,
     questionList,
@@ -17,11 +18,14 @@ function Postcard(props) {
     currLocationPath,
     currTab,
     loggedInUser,
+    setLoggedInUser,
   } = SiteState();
+
   const [liked, setLiked] = useState(false);
   const [answerVisibility, setAnswerVisibility] = useState(false);
   const [commentVisibility, setCommentVisibility] = useState(false);
-  const [following, setFollowing] = useState(false);
+  const [following, setFollowing] = useState();
+  const [updated, setUpdated] = useState(false);
 
   const comment = useRef(null);
   const answer = useRef(null);
@@ -31,41 +35,18 @@ function Postcard(props) {
   let [currCommentList, setCommentList] = useState([]);
   let lc = false;
   let loggedInUserId = "";
-  let loggedInUserName = "";
   let user_designation = "";
 
-  if (localStorage.getItem("userInfo")) {
-    // let currUser = JSON.parse(localStorage.getItem("userInfo"));
-    loggedInUserName = loggedInUser.name;
-    loggedInUserId = loggedInUser._id;
-    user_designation = loggedInUser.designation;
-    lc = likeCount.includes(loggedInUserId.toString());
-  }
   //const {user}=SiteState();
-
   useEffect(() => {
-    checkFollowedUser();
-  }, [props.followStatus, currLocationPath, loggedInUser._id]);
+    if (loggedInUser.following) {
+      setFollowing(loggedInUser.following.includes(user._id));
+    }
+  });
   useEffect(() => {
     setLiked(lc);
     setCommentList(commentList);
-  }, [
-    JSON.stringify(postList),
-    JSON.stringify(questionList),
-    commentList,
-    signedIn,
-    lc,
-  ]);
-  const checkFollowedUser = async () => {
-    let currLoggedUserInfo = await axios.get("/api/user/fetchUsers", {
-      params: { loggedInUser: loggedInUser._id },
-    });
-
-    setFollowing(false);
-    if (currLoggedUserInfo.data[0].following.includes(user._id)) {
-      setFollowing(true);
-    }
-  };
+  }, []);
 
   const handleLike = async () => {
     if (currLocationPath === "answer" || currTab == "answer") {
@@ -75,7 +56,7 @@ function Postcard(props) {
           {
             id: _id,
             likeCount: likeCount,
-            user_id: loggedInUserId.toString(),
+            user_id: loggedInUser._id,
             isLiked: !liked,
           },
           { params: { currLocationPath: "answer" } }
@@ -88,7 +69,7 @@ function Postcard(props) {
           {
             id: _id,
             likeCount: likeCount,
-            user_id: loggedInUserId.toString(),
+            user_id: loggedInUser._id,
             isLiked: !liked,
           },
           { params: { currLocationPath: "" } }
@@ -109,7 +90,7 @@ function Postcard(props) {
               "/api/user/addComment",
               {
                 post_id: _id,
-                user_name: loggedInUserName,
+                user_name: loggedInUser.name,
                 user_designation: user_designation,
                 comment: categoryAnswer.current.value,
               },
@@ -121,7 +102,7 @@ function Postcard(props) {
               "/api/user/addComment",
               {
                 post_id: _id,
-                user_name: loggedInUserName,
+                user_name: loggedInUser.name,
                 user_designation: user_designation,
                 comment: categoryComment.current.value,
               },
@@ -138,7 +119,7 @@ function Postcard(props) {
               "/api/user/addComment",
               {
                 post_id: _id,
-                user_name: loggedInUserName,
+                user_name: loggedInUser.name,
                 user_designation: user_designation,
                 comment: answer.current.value,
               },
@@ -150,7 +131,7 @@ function Postcard(props) {
               "/api/user/addComment",
               {
                 post_id: _id,
-                user_name: loggedInUserName,
+                user_name: loggedInUser.name,
                 user_designation: user_designation,
                 comment: comment.current.value,
               },
@@ -169,22 +150,39 @@ function Postcard(props) {
     }
   };
   const handleFollow = async () => {
+    console.log("loggedIn ", loggedInUser, " currUser: ", user);
+    setFollowing(!following);
+    setUpdated(!updated);
+    props.setPostUpdated(!props.postUpdated);
+    props.setPostUpdated(!props.postUpdated);
     try {
       if (!following) {
+        console.log("Not following");
+        setLoggedInUser({
+          ...loggedInUser,
+          following: [...loggedInUser.following, user._id],
+        });
         const followUser = await axios.put("/api/user/follow", {
-          loggedInUser: loggedInUserId,
+          loggedInUser: loggedInUser._id,
           followedUser: user._id,
         });
-        setFollowing(true);
+        user.followers = user.followers.filter((id) => {
+          return id != loggedInUser._id;
+        });
       } else {
+        console.log("following");
+        const updatedFollowing = loggedInUser.following.filter((id) => {
+          return id != user._id;
+        });
+        setLoggedInUser({
+          ...loggedInUser,
+          following: updatedFollowing,
+        });
         const unfollowUser = await axios.put("/api/user/unfollow", {
-          loggedInUser: loggedInUserId,
+          loggedInUser: loggedInUser._id,
           followedUser: user._id,
         });
-        setFollowing(false);
       }
-
-      props.setFollowStatus(!props.followStatus);
     } catch (err) {
       console.log(err.message);
     }
@@ -195,7 +193,7 @@ function Postcard(props) {
         <Box className="postCardHeader">
           <Box style={{ width: "10%" }}>
             <Avatar
-              name={user ? userName : ""}
+              name={user ? user.name : ""}
               src="https://bit.ly/broken-link"
               size={"sm"}
             />
@@ -203,9 +201,10 @@ function Postcard(props) {
           <Box style={{ width: "90%" }}>
             <p style={{ fontWeight: "750" }}>
               <Link to={`/profile/${user._id}`}>
-                {user ? userName.toUpperCase() : "Anonymous"}{" "}
+                {user.name ? user.name.toUpperCase() : "Anonymous"}
               </Link>
-              {user._id != loggedInUserId && currLocationPath !== "answer" ? (
+
+              {user._id != loggedInUser._id && currLocationPath !== "answer" ? (
                 <Button
                   colorScheme={"#1d1d1d"}
                   color="#4fa8db"

@@ -58,10 +58,8 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(signInPass))) {
     //  console.log("desig: "+  (user.designation))
     res.status(200).json({
-      _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
       designation: user.designation,
     });
   } else {
@@ -69,11 +67,10 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 const createPost = asyncHandler(async (req, res) => {
-  const { id, userName, tag, content, likeCount, commentList, designation } =
-    req.body;
+  const { loggedInUser, tag, content, likeCount, commentList } = req.body;
   const { currLocationPath } = req.query;
 
-  if (!id) {
+  if (!loggedInUser) {
     res.status(401);
     throw new Error("Please login to create post");
   }
@@ -84,35 +81,35 @@ const createPost = asyncHandler(async (req, res) => {
   let post = {};
   if (currLocationPath === "answer") {
     post = await Question.create({
-      user: id,
-      userName: userName,
+      user: loggedInUser._id,
+      userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
       commentList: commentList,
       tag: tag,
-      designation: designation,
+      designation: loggedInUser.designation,
     });
   } else {
     post = await Post.create({
-      user: id,
-      userName: userName,
+      user: loggedInUser._id,
+      userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
       commentList: commentList,
       tag: tag,
-      designation: designation,
+      designation: loggedInUser.designation,
     });
   }
 
   if (post) {
     res.status(200).json({
-      user: id,
-      userName: userName,
+      user: loggedInUser._id,
+      userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
       commentList: commentList,
       tag: tag,
-      designation: designation,
+      designation: loggedInUser.designation,
     });
   } else {
     res.status(400);
@@ -121,17 +118,21 @@ const createPost = asyncHandler(async (req, res) => {
 });
 
 const fetchPostList = asyncHandler(async (req, res) => {
-  const { currLocationPath } = req.query;
-  let postList = {};
-  if (currLocationPath === "answer") {
-    postList = await Question.find().populate("user").sort({ createdAt: -1 });
-  } else {
-    postList = await Post.find().populate("user").sort({ createdAt: -1 });
-  }
+  const postList = await Post.find().populate("user").sort({ createdAt: -1 });
   if (postList) {
-    res.status(200).send(postList);
+    res.status(201).send(postList);
   } else {
-    res.status(400).send("No post to show");
+    res.status(400).send("Error occured in fetching post list");
+  }
+});
+const fetchQuestionList = asyncHandler(async (req, res) => {
+  const questionList = await Question.find()
+    .populate("user")
+    .sort({ createdAt: -1 });
+  if (questionList) {
+    res.status(201).send(questionList);
+  } else {
+    res.status(400).send("Error occured in fetching question list");
   }
 });
 const updateLikes = asyncHandler(async (req, res) => {
@@ -374,12 +375,24 @@ const fetchUserProfileData = asyncHandler(async (req, res) => {
     res.status(400).send("Some error occured while finding user");
   }
 });
+const fetchUserDetail = asyncHandler(async (req, res) => {
+  const { email } = req.query;
+  console.log("query ", req.query);
+  const user = await User.findOne({ email: email }).select("-password");
+  if (user) {
+    console.log("user: ", user);
+    res.status(200).send(user);
+  } else {
+    res.status(400).send("Some error occured in fetching user");
+  }
+});
 
 module.exports = {
   registerUser,
   loginUser,
   createPost,
   fetchPostList,
+  fetchQuestionList,
   updateLikes,
   addComment,
   searchPost,
@@ -391,4 +404,5 @@ module.exports = {
   unfollowUser,
   fetchUsers,
   fetchUserProfileData,
+  fetchUserDetail,
 };
