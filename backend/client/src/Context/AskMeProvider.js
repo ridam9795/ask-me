@@ -4,18 +4,66 @@ import RichTextEditor from "react-rte";
 const SiteContext = createContext();
 const AskMeProvider = ({ children }) => {
   const sidePanelList = [
-    { name: "Marketing", isFollowing: false },
-    { name: "Finance", isFollowing: false },
-    { name: "Invention and Inventions", isFollowing: false },
-    { name: "The Internet", isFollowing: false },
-    { name: "Computer Science", isFollowing: false },
-    { name: "Mathematics", isFollowing: false },
-    { name: "Economics", isFollowing: false },
-    { name: "Business", isFollowing: false },
-    { name: "Education", isFollowing: false },
-    { name: "Science", isFollowing: false },
-    { name: "Technology", isFollowing: false },
-    { name: "Discover Spaces", isFollowing: false },
+    {
+      name: "Marketing",
+      url: "https://www.insegment.com/blog/wp-content/uploads/2016/04/The-Role-of-Marketing-1.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Finance",
+      url: "https://img.freepik.com/free-vector/finance-financial-performance-concept-illustration_53876-40450.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Invention and Inventions",
+      url: "https://career101.in/wp-content/uploads/2022/05/Inventions-that-Changed-the-World.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "The Internet",
+      url: "https://www.howtogeek.com/wp-content/uploads/2018/02/img_5a78dece9a202.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Computer Science",
+      url: "https://c8.alamy.com/comp/F08JHA/science-concept-computer-science-on-digital-background-F08JHA.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Mathematics",
+      url: "https://miro.medium.com/max/1400/1*L76A5gL6176UbMgn7q4Ybg.jpeg",
+      isFollowing: false,
+    },
+    {
+      name: "Economics",
+      url: "https://m.media-amazon.com/images/I/91LUJScnhDL.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Business",
+      url: "https://imageio.forbes.com/blogs-images/alejandrocremades/files/2018/07/desk-3139127_1920-1200x773.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Education",
+      url: "https://images.hindustantimes.com/rf/image_size_640x362/HT/p2/2015/12/01/Pictures/_c34102da-9849-11e5-b4f4-1b7a09ed2cea.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Science",
+      url: "https://img.freepik.com/free-vector/colorful-science-education-background_23-2148490697.jpg",
+      isFollowing: false,
+    },
+    {
+      name: "Technology",
+      url: "https://images.moneycontrol.com/static-mcnews/2022/04/shutterstock_767487700-1.png",
+      isFollowing: false,
+    },
+    {
+      name: "Discover Spaces",
+      url: "https://media.npr.org/assets/img/2020/11/18/nh-sc-pluto-illustration-71deaf602c8fe8dd73777e1cbf859507923366fc-s1100-c50.jpg",
+      isFollowing: false,
+    },
   ];
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isPost, setIsPost] = useState(false);

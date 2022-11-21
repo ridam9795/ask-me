@@ -16,8 +16,6 @@ function ProfilePage() {
         params: { user_id: userID },
       });
       if (user.data) {
-        console.log(user.data);
-
         setProfileUser(user.data);
       }
     } catch (err) {
@@ -26,7 +24,6 @@ function ProfilePage() {
   };
   useEffect(() => {
     fetchProfileUser();
-    console.log(userID);
   }, [userID]);
   return (
     <>

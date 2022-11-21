@@ -6,11 +6,6 @@ const {
   fetchPostList,
   updateLikes,
   addComment,
-  searchPost,
-  filterPostCategory,
-  filterQuestionCategory,
-  searchPostCategory,
-  searchQuestionCategory,
   followUser,
   unfollowUser,
   fetchUsers,
@@ -30,11 +25,6 @@ router.route("/questionList").get(fetchQuestionList);
 router.route("/fetchUserDetail").get(fetchUserDetail);
 router.route("/updatePostLikes").put(updateLikes);
 router.route("/addComment").put(addComment);
-router.route("/search").get(searchPost);
-router.route("/filterPostCategory").get(filterPostCategory);
-router.route("/filterQuestionCategory").get(filterQuestionCategory);
-router.route("/searchPostCategory").get(searchPostCategory);
-router.route("/searchQuestionCategory").get(searchQuestionCategory);
 router.route("/follow").put(followUser);
 router.route("/unfollow").put(unfollowUser);
 router.route("/fetchUsers").get(fetchUsers);

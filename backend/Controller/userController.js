@@ -14,7 +14,6 @@ const registerUser = asyncHandler(async (req, res) => {
     !signUpConfPass ||
     !designation
   ) {
-    // console.log(signUpEmail+" "+signUpPass+" "+signUpName+" "+designation)
     res.status(401).send("Please Enter all the fields");
     return;
   }
@@ -50,13 +49,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { signInEmail, signInPass } = req.body;
-  console.log(signInEmail + " " + signInPass);
   if (!signInEmail || !signInPass) {
     res.status(401).send("Please fill all the deatils");
   }
   const user = await User.findOne({ email: signInEmail });
   if (user && (await user.matchPassword(signInPass))) {
-    //  console.log("desig: "+  (user.designation))
     res.status(200).json({
       name: user.name,
       email: user.email,
@@ -81,7 +78,7 @@ const createPost = asyncHandler(async (req, res) => {
   let post = {};
   if (currLocationPath === "answer") {
     post = await Question.create({
-      user: loggedInUser._id,
+      user: loggedInUser,
       userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
@@ -91,7 +88,7 @@ const createPost = asyncHandler(async (req, res) => {
     });
   } else {
     post = await Post.create({
-      user: loggedInUser._id,
+      user: loggedInUser,
       userName: loggedInUser.name,
       content: content,
       likeCount: likeCount,
@@ -186,7 +183,6 @@ const addComment = asyncHandler(async (req, res) => {
     post = await Post.find({ _id: post_id });
   }
   if (post.length > 0) {
-    //   post[0].commentList.push({comment:comment,user_name:user_name,user_designation:user_designation});
     post[0].commentList = [
       {
         comment: comment,
@@ -195,7 +191,6 @@ const addComment = asyncHandler(async (req, res) => {
       },
       ...post[0].commentList,
     ];
-    //  console.log("post: >>>>>>>>",post[0]," length:  ",post[0].commentList.length)
     let updatePost = {};
     if (currLocationPath === "answer") {
       updatePost = await Question.findOneAndUpdate({ _id: post_id }, post[0]);
@@ -203,8 +198,6 @@ const addComment = asyncHandler(async (req, res) => {
       updatePost = await Post.findOneAndUpdate({ _id: post_id }, post[0]);
     }
     if (updatePost) {
-      //    console.log(updatePost);
-
       res.status(200).send(post[0]);
     } else {
       res.status(400).send("Some Error occured while updating post");
@@ -213,91 +206,7 @@ const addComment = asyncHandler(async (req, res) => {
     res.status(404).send("Post Not Found");
   }
 });
-const searchPost = asyncHandler(async (req, res) => {
-  const { search } = req.query;
 
-  let post = [];
-  if (req.query.currLocationPath === "answer") {
-    post = await Question.find({
-      content: { $regex: req.query.search, $options: "i" },
-    }).sort({ createdAt: -1 });
-  } else if (req.query.currLocationPath === "") {
-    post = await Post.find({
-      content: { $regex: req.query.search, $options: "i" },
-    }).sort({ createdAt: -1 });
-  }
-
-  if (post) {
-    res.status(200).send(post);
-  } else {
-    res.status(400).send("Some error occured");
-  }
-});
-const filterPostCategory = asyncHandler(async (req, res) => {
-  const { selectedCategory } = req.query;
-  const post = await Post.find({
-    tag: {
-      $in: [selectedCategory],
-    },
-  });
-  if (post) {
-    res.status(200).send(post);
-  } else {
-    res.status(404).send("Some error occured while getting post");
-  }
-});
-const filterQuestionCategory = asyncHandler(async (req, res) => {
-  const { selectedCategory } = req.query;
-  const question = await Question.find({
-    tag: {
-      $in: [selectedCategory],
-    },
-  });
-  if (question) {
-    res.status(200).send(question);
-  } else {
-    res.status(404).send("Some error occured while getting questions");
-  }
-});
-const searchQuestionCategory = asyncHandler(async (req, res) => {
-  const { selectedCategory, searchValue } = req.query;
-  const question = await Question.find({
-    $and: [
-      {
-        tag: {
-          $in: [selectedCategory],
-        },
-      },
-      { content: { $regex: req.query.searchValue, $options: "i" } },
-    ],
-  });
-  if (question) {
-    //console.log(question);
-    res.status(200).send(question);
-  } else {
-    res.status(404).send("Some error occured while getting post");
-  }
-});
-const searchPostCategory = asyncHandler(async (req, res) => {
-  const { selectedCategory, searchValue } = req.query;
-  // console.log(selectedCategory + " " + searchValue);
-  const post = await Post.find({
-    $and: [
-      {
-        tag: {
-          $in: [selectedCategory],
-        },
-      },
-      { content: { $regex: req.query.searchValue, $options: "i" } },
-    ],
-  });
-  if (post) {
-    //  console.log(post);
-    res.status(200).send(post);
-  } else {
-    res.status(404).send("Some error occured while getting post");
-  }
-});
 const followUser = asyncHandler(async (req, res) => {
   const { loggedInUser, followedUser } = req.body;
 
@@ -377,10 +286,8 @@ const fetchUserProfileData = asyncHandler(async (req, res) => {
 });
 const fetchUserDetail = asyncHandler(async (req, res) => {
   const { email } = req.query;
-  console.log("query ", req.query);
   const user = await User.findOne({ email: email }).select("-password");
   if (user) {
-    console.log("user: ", user);
     res.status(200).send(user);
   } else {
     res.status(400).send("Some error occured in fetching user");
@@ -395,11 +302,6 @@ module.exports = {
   fetchQuestionList,
   updateLikes,
   addComment,
-  searchPost,
-  filterPostCategory,
-  filterQuestionCategory,
-  searchQuestionCategory,
-  searchPostCategory,
   followUser,
   unfollowUser,
   fetchUsers,

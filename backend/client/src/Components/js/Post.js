@@ -7,7 +7,7 @@ import axios from "axios";
 import { Spinner } from "@chakra-ui/react";
 import { useCallback } from "react";
 import React from "react";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 function Post() {
   const {
     postList,
@@ -23,34 +23,7 @@ function Post() {
   const [postUpdated, setPostUpdated] = useState(false);
   const toast = useToast();
   const location = useLocation();
-  useEffect(() => {
-    fetchPostList();
-    fetchQuestionList();
-  }, []);
-
-  const fetchPostList = async () => {
-    try {
-      let fetchPost;
-      fetchPost = await axios.get("/api/user/postList");
-      if (fetchPost.data) {
-        setPostList(fetchPost.data);
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-  const fetchQuestionList = async () => {
-    try {
-      let fetchQuestion;
-      fetchQuestion = await axios.get("/api/user/questionList");
-
-      if (fetchQuestionList) {
-        setQuestionList(fetchQuestion.data);
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  let { category } = useParams();
 
   const getCurrentList = () => {
     let path = location.pathname;
@@ -75,11 +48,9 @@ function Post() {
             return (
               <div key={index}>
                 <Postcard
-                  postUpdated={postUpdated}
-                  setPostUpdated={setPostUpdated}
                   postValue={post}
                   isCategory={false}
-                  currLoggedUser={currLoggedUser}
+                  type={location.pathname}
                 />
               </div>
             );

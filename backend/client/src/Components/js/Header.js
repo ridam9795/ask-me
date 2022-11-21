@@ -29,9 +29,43 @@ function Header(props) {
     setLoggedInUser,
     search,
     setSearch,
+    postList,
+    setPostList,
+    questionList,
+    setQuestionList,
   } = SiteState();
   const navigate = useNavigate();
   const [openAuth, setOpenAuth] = useState(false);
+
+  useEffect(() => {
+    fetchQuestionList();
+  }, [questionList.length]);
+  useEffect(() => {
+    fetchPostList();
+  }, [postList.length]);
+  const fetchPostList = async () => {
+    try {
+      let fetchPost;
+      fetchPost = await axios.get("/api/user/postList");
+      if (fetchPost.data) {
+        setPostList(fetchPost.data);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  const fetchQuestionList = async () => {
+    try {
+      let fetchQuestion;
+      fetchQuestion = await axios.get("/api/user/questionList");
+
+      if (fetchQuestionList) {
+        setQuestionList(fetchQuestion.data);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
   useEffect(() => {
     const data = localStorage.getItem("userInfo");
     if (data) {

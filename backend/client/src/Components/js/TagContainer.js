@@ -17,7 +17,6 @@ function TagContainer() {
   } = SiteState();
   const toast = useToast();
   const handleRemove = (idx) => {
-    console.log("idx", idx);
     const filtertedBadge = badge.filter((item, index) => {
       return index !== idx;
     });
