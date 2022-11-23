@@ -1,7 +1,7 @@
 import { Avatar, Button } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import "react-profile-avatar/dist/index.css";
-import { BellIcon, ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import "../css/Header.css";
 import ModalContent from "./ModalContent";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -139,23 +139,7 @@ function Header(props) {
           />
           <span className="tooltiptext">Answer</span>
         </NavLink>
-        <NavLink
-          to="/notifications"
-          style={({ isActive }) => (isActive ? activeStyle : undefined)}
-          className="tooltip"
-        >
-          <BellIcon
-            color={"white"}
-            boxSize={"25px"}
-            marginLeft={"4%"}
-            backgroundColor={"#1d1d1d"}
-          />
-          <span className="tooltiptext">Notifications</span>
-        </NavLink>
 
-        {/* <Link to="/" className='image'><img src={home} alt="home" /></Link>   */}
-        {/* <EditIcon color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/> */}
-        {/* <BellIcon  color={'white'} boxSize={'30px'}  marginLeft={'4%'} backgroundColor={'#1d1d1d'}/>                 */}
         <input
           type="text"
           className="Input"
