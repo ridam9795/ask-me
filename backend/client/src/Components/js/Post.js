@@ -1,29 +1,13 @@
 import { Box, Text, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SiteState } from "../../Context/AskMeProvider";
 import CreatePost from "../CreatePost";
 import Postcard from "./Postcard";
-import axios from "axios";
-import { Spinner } from "@chakra-ui/react";
-import { useCallback } from "react";
 import React from "react";
 import { useLocation, useParams } from "react-router";
 function Post() {
-  const {
-    postList,
-    setPostList,
-    questionList,
-    setQuestionList,
-    search,
-    signedIn,
-  } = SiteState();
-  const [postNotFound, setPostNotFound] = useState(false);
-  const [currLoggedUser, setCurrLoggedUser] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [postUpdated, setPostUpdated] = useState(false);
-  const toast = useToast();
+  const { postList, questionList, search, signedIn } = SiteState();
   const location = useLocation();
-  let { category } = useParams();
 
   const getCurrentList = () => {
     let path = location.pathname;

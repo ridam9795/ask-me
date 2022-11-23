@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "../css/CategoryPage.css";
-import { Link, useParams } from "react-router-dom";
-import { Box, Button, Img, Text } from "@chakra-ui/react";
-import axios from "axios";
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Textarea,
-} from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import { Box, Img, Text } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { SiteState } from "../../Context/AskMeProvider";
 import Postcard from "./Postcard";
 
@@ -30,11 +22,9 @@ function CategoryPage() {
   } = SiteState();
 
   const filterPost = () => {
-    console.log(category, " ", postList);
     const filteredPostList = postList.filter((post) => {
       return post.tag.includes(category);
     });
-    console.log("filterd post ", filteredPostList);
     if (search.length > 0) {
       return filteredPostList.filter((post) => {
         return post.content.toLowerCase().includes(search.toLowerCase());
@@ -43,11 +33,9 @@ function CategoryPage() {
     return filteredPostList;
   };
   const filterQuestion = () => {
-    console.log(category, " ", questionList);
     const filteredQuestionList = questionList.filter((question) => {
       return question.tag.includes(category);
     });
-    console.log("filterd Question ", filteredQuestionList);
     if (search.length > 0) {
       return filteredQuestionList.filter((question) => {
         return question.content.toLowerCase().includes(search.toLowerCase());

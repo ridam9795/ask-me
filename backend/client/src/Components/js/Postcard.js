@@ -16,7 +16,6 @@ function Postcard(props) {
     setPostList,
     setQuestionList,
     questionList,
-    signedIn,
     currLocationPath,
     currTab,
     loggedInUser,
@@ -28,33 +27,20 @@ function Postcard(props) {
   const [answerVisibility, setAnswerVisibility] = useState(false);
   const [commentVisibility, setCommentVisibility] = useState(false);
   const [following, setFollowing] = useState();
-  const [updated, setUpdated] = useState(false);
-
   const comment = useRef(null);
   const answer = useRef(null);
-  const categoryComment = useRef(null);
-  const categoryAnswer = useRef(null);
   let { likeCount, commentList } = props.postValue;
-  let [currCommentList, setCurrCommentList] = useState([]);
-  let [currAnswerList, setCurrAnswerList] = useState([]);
-
   let lc = false;
-  let loggedInUserId = "";
   let user_designation = "";
-  //const {user}=SiteState();
   useEffect(() => {
     setLiked(likeCount.includes(loggedInUser._id));
     if (loggedInUser.following) {
       setFollowing(loggedInUser.following.includes(user._id));
     }
   });
-  useEffect(() => {
-    setLiked(lc);
-    // setCommentList(commentList);
-  }, []);
 
   const handleLike = async () => {
-    if (location.pathname === "/answer" || currTab == "answer") {
+    if (props.type === "/answer") {
       if (liked) {
         let updatedQuestionList = [];
         questionList.map((question) => {
@@ -84,8 +70,8 @@ function Postcard(props) {
         });
         setQuestionList(updatedPostList);
       }
-      let updatePostLikes = await axios
-        .put(
+      try {
+        let updatePostLikes = await axios.put(
           "/api/user/updatePostLikes",
           {
             id: _id,
@@ -94,8 +80,10 @@ function Postcard(props) {
             isLiked: !liked,
           },
           { params: { currLocationPath: "answer" } }
-        )
-        .then((data) => {});
+        );
+      } catch (err) {
+        console.log("Error occured ", err);
+      }
     } else {
       if (liked) {
         let updatedPost = [];
@@ -126,9 +114,8 @@ function Postcard(props) {
         });
         setPostList(updatedPost);
       }
-
-      let updatePostLikes = await axios
-        .put(
+      try {
+        let updatePostLikes = await axios.put(
           "/api/user/updatePostLikes",
           {
             id: _id,
@@ -137,8 +124,10 @@ function Postcard(props) {
             isLiked: !liked,
           },
           { params: { currLocationPath: "" } }
-        )
-        .then((data) => {});
+        );
+      } catch (err) {
+        console.log("Error occured ", err);
+      }
     }
 
     setLiked(!liked);

@@ -35,8 +35,11 @@ function Header(props) {
     setQuestionList,
   } = SiteState();
   const navigate = useNavigate();
+  const location = useLocation();
   const [openAuth, setOpenAuth] = useState(false);
-
+  useEffect(() => {
+    setSearch("");
+  }, [location.pathname]);
   useEffect(() => {
     fetchQuestionList();
   }, [questionList.length]);
