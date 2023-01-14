@@ -98,9 +98,12 @@ function CategoryPage() {
             {filterPost().length > 0 ? (
               filterPost().map((post) => {
                 return (
-                  <div key={post._id}>
-                    <Postcard postValue={post} isCategory={true} type={"/"} />
-                  </div>
+                  <Postcard
+                    key={post._id}
+                    postValue={post}
+                    isCategory={true}
+                    type={"/"}
+                  />
                 );
               })
             ) : (
@@ -118,15 +121,14 @@ function CategoryPage() {
           </TabPanel>
           <TabPanel>
             {filterQuestion().length > 0 ? (
-              filterQuestion().map((question) => {
+              filterQuestion().map((question, index) => {
                 return (
-                  <div key={question._id}>
-                    <Postcard
-                      postValue={question}
-                      isCategory={true}
-                      type={"/answer"}
-                    />
-                  </div>
+                  <Postcard
+                    key={question._id}
+                    postValue={question}
+                    isCategory={true}
+                    type={"/answer"}
+                  />
                 );
               })
             ) : (

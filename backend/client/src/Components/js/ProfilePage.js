@@ -9,6 +9,9 @@ import UserCard from "./UserCard";
 
 function ProfilePage() {
   let { userID } = useParams();
+    useEffect(() => {
+      fetchProfileUser();
+    }, [userID]);
   const [profileUser, setProfileUser] = useState({});
   const fetchProfileUser = async () => {
     try {
@@ -22,9 +25,7 @@ function ProfilePage() {
       console.log(err);
     }
   };
-  useEffect(() => {
-    fetchProfileUser();
-  }, [userID]);
+
   return (
     <>
       <Box bg="#383735" w={"850px"} ml={"-250px"} display="flex" pt={5} pb={5}>

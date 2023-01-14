@@ -14,11 +14,11 @@ function Post() {
 
     if (path == "/") {
       return postList.filter((post) => {
-        return post.content.toLowerCase().includes(search.toLowerCase());
+        return post.content.toLowerCase().includes(search);
       });
     } else if (path == "/answer") {
       return questionList.filter((question) => {
-        return question.content.toLowerCase().includes(search.toLowerCase());
+        return question.content.toLowerCase().includes(search);
       });
     }
   };

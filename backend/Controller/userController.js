@@ -292,6 +292,14 @@ const fetchUserDetail = asyncHandler(async (req, res) => {
     res.status(400).send("Some error occured in fetching user");
   }
 });
+const fetchAllUser = asyncHandler(async (req, res) => {
+  const user = await User.find();
+  if (user) {
+    res.status(200).send(user);
+  } else {
+    res.status(400).send("Some error occured in fetching all users");
+  }
+});
 
 module.exports = {
   registerUser,
@@ -306,4 +314,5 @@ module.exports = {
   fetchUsers,
   fetchUserProfileData,
   fetchUserDetail,
+  fetchAllUser,
 };

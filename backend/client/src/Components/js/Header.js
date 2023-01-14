@@ -6,6 +6,7 @@ import "../css/Header.css";
 import ModalContent from "./ModalContent";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
 import { SiteState } from "../../Context/AskMeProvider";
 import {
   Menu,
@@ -16,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import Auth from "./Auth";
 import axios from "axios";
+import People from "@mui/icons-material/People";
 function Header(props) {
   const searchRef = useRef();
   let activeStyle = {
@@ -138,6 +140,13 @@ function Header(props) {
             backgroundColor={"#1d1d1d"}
           />
           <span className="tooltiptext">Answer</span>
+        </NavLink>
+        <NavLink
+          to="find-people"
+          style={({ isActive }) => (isActive ? activeStyle : undefined)}
+          className="tooltip"
+        >
+          <People style={{ color: "white", fontSize: "30px" }} />
         </NavLink>
 
         <input
