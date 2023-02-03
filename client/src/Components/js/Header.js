@@ -41,6 +41,8 @@ function Header(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const [openAuth, setOpenAuth] = useState(false);
+   // axios.defaults.baseURL = "https://spontaneous-tartufo-e18bb0.netlify.app";
+
   // useEffect(() => {
   //   if (socket.id) {
   //     socket.on("notification", (data) => {
