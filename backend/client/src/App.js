@@ -9,21 +9,21 @@ import { useLocation } from "react-router-dom";
 import ProfilePage from "./Components/js/ProfilePage";
 import { Box } from "@chakra-ui/react";
 import FindPeople from "./Components/js/FindPeople";
- import io from "socket.io-client";
+ //import io from "socket.io-client";
  import { useState } from "react";
  import { SiteState } from "./Context/AskMeProvider";
  function App() {
    let endpoint = "http://localhost:5000";
-   const { socket, setSocket, loggedInUser } = SiteState();
+   const {  loggedInUser } = SiteState();
 
    useEffect(() => {
-     if (loggedInUser && loggedInUser._id) {
-       let skt = io(endpoint);
-       skt.on("connect", () => {
-         setSocket(skt);
-         console.log("Connected to client socket", skt.id);
-       });
-     }
+    //  if (loggedInUser && loggedInUser._id) {
+    //    let skt = io(endpoint);
+    //    skt.on("connect", () => {
+    //      setSocket(skt);
+    //      console.log("Connected to client socket", skt.id);
+    //    });
+    //  }
 
      window.scrollTo(0, 0);
    }, [JSON.stringify(loggedInUser)]);
@@ -39,7 +39,8 @@ import FindPeople from "./Components/js/FindPeople";
            <Routes>
              <Route path="/" exact element={<Post />} />
              <Route path="/topic/:category" element={<CategoryPage />} />
-             <Route path="/answer" element={<Post socket={socket} />} />
+             {/* <Route path="/answer" element={<Post socket={socket} />} /> */}
+             <Route path="/answer" element={<Post  />} />
              <Route path="/find-people" element={<FindPeople />} />
            </Routes>
          </div>

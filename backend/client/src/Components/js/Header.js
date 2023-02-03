@@ -36,20 +36,20 @@ function Header(props) {
     setPostList,
     questionList,
     setQuestionList,
-    socket,
+    // socket,
   } = SiteState();
   const navigate = useNavigate();
   const location = useLocation();
   const [openAuth, setOpenAuth] = useState(false);
-  useEffect(() => {
-    if (socket.id) {
-      socket.on("notification", (data) => {
-        if (loggedInUser && data.user._id == loggedInUser._id) {
-          console.log(data.message);
-        }
-      });
-    }
-  });
+  // useEffect(() => {
+  //   if (socket.id) {
+  //     socket.on("notification", (data) => {
+  //       if (loggedInUser && data.user._id == loggedInUser._id) {
+  //         console.log(data.message);
+  //       }
+  //     });
+  //   }
+  // });
   useEffect(() => {
     setSearch("");
   }, [location.pathname]);

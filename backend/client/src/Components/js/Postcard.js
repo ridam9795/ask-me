@@ -21,8 +21,8 @@ function Postcard(props) {
     currTab,
     loggedInUser,
     setLoggedInUser,
-    socket,
-    setSocket,
+    // socket,
+    // setSocket,
   } = SiteState();
 
   const location = useLocation();
@@ -213,9 +213,9 @@ function Postcard(props) {
     }
   };
   const sendNotification = (messageDetail) => {
-    if (socket.id) {
-      socket.emit("notify", messageDetail);
-    }
+    // if (socket.id) {
+    //   socket.emit("notify", messageDetail);
+    // }
   };
   const handleFollow = async () => {
     setFollowing(!following);
