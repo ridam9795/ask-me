@@ -153,13 +153,17 @@ function Header(props) {
           />
           <span className="tooltiptext">Answer</span>
         </NavLink>
-        <NavLink
-          to="find-people"
-          style={({ isActive }) => (isActive ? activeStyle : undefined)}
-          className="tooltip"
-        >
-          <People style={{ color: "white", fontSize: "30px" }} />
-        </NavLink>
+        {signedIn ? (
+          <NavLink
+            to="find-people"
+            style={({ isActive }) => (isActive ? activeStyle : undefined)}
+            className="tooltip"
+          >
+            <People style={{ color: "white", fontSize: "30px" }} />
+          </NavLink>
+        ) : (
+          <></>
+        )}
 
         <input
           type="text"

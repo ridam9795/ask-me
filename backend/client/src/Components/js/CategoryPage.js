@@ -19,9 +19,13 @@ function CategoryPage() {
     postList,
     questionList,
     search,
+    signedIn,
   } = SiteState();
 
   const filterPost = () => {
+    if (!signedIn) {
+      return [];
+    }
     const filteredPostList = postList.filter((post) => {
       return post.tag.includes(category);
     });
@@ -33,6 +37,9 @@ function CategoryPage() {
     return filteredPostList;
   };
   const filterQuestion = () => {
+    if (!signedIn) {
+      return [];
+    }
     const filteredQuestionList = questionList.filter((question) => {
       return question.tag.includes(category);
     });

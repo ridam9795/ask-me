@@ -52,19 +52,14 @@ function Post() {
             justifyContent={"center"}
             position={"absolute"}
             w={"50%"}
-            ml={"33%"}
+            ml={"8%"}
             fontSize={"30px"}
             mt={"10%"}
           >
             {location.pathname === "/" ? (
-              <Text ml={"23%"} color={"white"}>
-                {" "}
-                NO POST TO SHOW
-              </Text>
+              <Text color={"white"}> NO POST TO SHOW</Text>
             ) : (
-              <Text ml={"20%"} color={"white"}>
-                NO QUESTION TO SHOW
-              </Text>
+              <Text color={"white"}>NO QUESTION TO SHOW</Text>
             )}
           </Box>
         )}
