@@ -44,8 +44,8 @@ function Auth({ openAuth, closeAuthModal }) {
   const [designation, setDesignation] = useState("");
 
   const toast = useToast();
-  axios.defaults.baseURL = "https://ask-me-mern-app.herokuapp.com/";
-  //axios.defaults.baseURL = "http://localhost:5000/";
+  //axios.defaults.baseURL = "https://63dccbff4c9ea036aa6fb223--spontaneous-tartufo-e18bb0.netlify.app/";
+  axios.defaults.baseURL = "http://localhost:5000/";
 
   const handleLogin = async (e) => {
     try {

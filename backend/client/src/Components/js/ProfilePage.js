@@ -28,7 +28,15 @@ function ProfilePage() {
 
   return (
     <>
-      <Box bg="#383735" w={"850px"} ml={"-250px"} display="flex" pt={5} pb={5}>
+      <Box
+        bg="#383735"
+        w={"850px"}
+        ml={"-30%"}
+        borderRadius={"10px"}
+        display="flex"
+        pt={5}
+        pb={5}
+      >
         <Avatar size={"2xl"} ml={10}></Avatar>
         <Box>
           <Text w="100%" color="white" ml={8} fontSize={30} fontWeight={"bold"}>
@@ -47,11 +55,12 @@ function ProfilePage() {
       <Box
         bg="#383735"
         w={"850px"}
-        ml={"-250px"}
         display="flex"
         mt={3}
         pb={5}
+        ml={"-30%"}
         height={"500px"}
+        borderRadius={"10px"}
       >
         <Tabs w="100%" color={"white"}>
           <TabList>

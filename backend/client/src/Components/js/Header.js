@@ -8,6 +8,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
 import { SiteState } from "../../Context/AskMeProvider";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   Menu,
   MenuButton,
@@ -35,10 +36,20 @@ function Header(props) {
     setPostList,
     questionList,
     setQuestionList,
+    socket,
   } = SiteState();
   const navigate = useNavigate();
   const location = useLocation();
   const [openAuth, setOpenAuth] = useState(false);
+  useEffect(() => {
+    if (socket.id) {
+      socket.on("notification", (data) => {
+        if (loggedInUser && data.user._id == loggedInUser._id) {
+          console.log(data.message);
+        }
+      });
+    }
+  });
   useEffect(() => {
     setSearch("");
   }, [location.pathname]);
@@ -99,6 +110,7 @@ function Header(props) {
     localStorage.removeItem("userInfo");
     setSignedIn(false);
     setLoggedInUser(null);
+    window.location.reload();
   };
   const handleSearch = async (e) => {
     setSearch(e.target.value);
@@ -174,6 +186,7 @@ function Header(props) {
                 src="https://bit.ly/broken-link"
                 name={loggedInUser ? loggedInUser.name : ""}
                 size={"md"}
+                mb={"12px"}
               />
             </MenuButton>
             <MenuList>

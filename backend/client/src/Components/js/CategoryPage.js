@@ -79,7 +79,6 @@ function CategoryPage() {
         variant="line"
         position={"relative"}
         mt={"30%"}
-        ml={"88%"}
         w={"100%"}
         colorScheme={"red"}
         isLazy={"true"}

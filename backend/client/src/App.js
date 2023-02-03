@@ -9,35 +9,48 @@ import { useLocation } from "react-router-dom";
 import ProfilePage from "./Components/js/ProfilePage";
 import { Box } from "@chakra-ui/react";
 import FindPeople from "./Components/js/FindPeople";
+ import io from "socket.io-client";
+ import { useState } from "react";
+ import { SiteState } from "./Context/AskMeProvider";
+ function App() {
+   let endpoint = "http://localhost:5000";
+   const { socket, setSocket, loggedInUser } = SiteState();
 
-function App() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  let location = useLocation();
-  return (
-    <>
-      <Header />
-      <div className="content">
-        <div className="leftPane">
-          {!location.pathname.startsWith("/profile") && <Sidebar />}
-        </div>
-        <div className="rightPane">
-          <Routes>
-            <Route path="/" exact element={<Post />} />
-            <Route path="/topic/:category" element={<CategoryPage />} />
-            <Route path="/answer" element={<Post />} />
-            <Route path="/find-people" element={<FindPeople />} />
-          </Routes>
-        </div>
-        <Box className="profile">
-          <Routes>
-            <Route path="/profile/:userID" element={<ProfilePage />} />
-          </Routes>
-        </Box>
-      </div>
-    </>
-  );
-}
+   useEffect(() => {
+     if (loggedInUser && loggedInUser._id) {
+       let skt = io(endpoint);
+       skt.on("connect", () => {
+         setSocket(skt);
+         console.log("Connected to client socket", skt.id);
+       });
+     }
+
+     window.scrollTo(0, 0);
+   }, [JSON.stringify(loggedInUser)]);
+   let location = useLocation();
+   return (
+     <>
+       <Header />
+       <div className="content">
+         <div className="leftPane">
+           {!location.pathname.startsWith("/profile") && <Sidebar />}
+         </div>
+         <div className="middlePane">
+           <Routes>
+             <Route path="/" exact element={<Post />} />
+             <Route path="/topic/:category" element={<CategoryPage />} />
+             <Route path="/answer" element={<Post socket={socket} />} />
+             <Route path="/find-people" element={<FindPeople />} />
+           </Routes>
+         </div>
+         <Box className="profile">
+           <Routes>
+             <Route path="/profile/:userID" element={<ProfilePage />} />
+           </Routes>
+         </Box>
+       </div>
+     </>
+   );
+ }
 
 export default App;

@@ -23,6 +23,19 @@ if (process.env.NODE_ENV == "production") {
   //     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   //   });
 }
-app.listen(port,()=>{
-    console.log("Server is up")
-})
+let server = app.listen(port, () => {
+  console.log("Server is up");
+});
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+io.on("connection", (socket) => {
+  console.log(`Connected to socket.io with id: ${socket.id}`);
+  socket.on("notify", (message) => {
+    console.log(message);
+    io.emit("notification", message);
+  });
+});
+

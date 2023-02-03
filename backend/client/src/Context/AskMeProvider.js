@@ -89,6 +89,8 @@ const AskMeProvider = ({ children }) => {
   const [filteredQuestion, setFilteredQuestion] = useState([]);
   const [tabIdx, setTabIdx] = useState(0);
   const [following, setFollowing] = useState(false);
+  const [notification, setNotification] = useState([]);
+  const [socket, setSocket] = useState({});
 
   function openModal(tab) {
     if (tab === "ask") {
@@ -156,6 +158,10 @@ const AskMeProvider = ({ children }) => {
         setTabIdx,
         following,
         setFollowing,
+        notification,
+        setNotification,
+        socket,
+        setSocket,
       }}
     >
       {children}

@@ -1,12 +1,20 @@
 import { Box, Text, useToast } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SiteState } from "../../Context/AskMeProvider";
 import CreatePost from "../CreatePost";
 import Postcard from "./Postcard";
 import React from "react";
 import { useLocation, useParams } from "react-router";
+
 function Post() {
-  const { postList, questionList, search, signedIn } = SiteState();
+  const {
+    postList,
+    questionList,
+    search,
+    signedIn,
+    notification,
+    setNotification,
+  } = SiteState();
   const location = useLocation();
 
   const getCurrentList = () => {

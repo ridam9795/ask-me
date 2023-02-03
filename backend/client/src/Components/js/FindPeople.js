@@ -40,7 +40,7 @@ function FindPeople() {
   };
 
   return (
-    <Box ml={"83%"} w="150%">
+    <Box w="150%">
       <Box>
         <Text
           fontSize={"30px"}

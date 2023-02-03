@@ -8,6 +8,7 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { SiteState } from "../../Context/AskMeProvider";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
+
 function Postcard(props) {
   const { _id, user, content, designation } = props.postValue;
 
@@ -20,7 +21,10 @@ function Postcard(props) {
     currTab,
     loggedInUser,
     setLoggedInUser,
+    socket,
+    setSocket,
   } = SiteState();
+
   const location = useLocation();
 
   const [liked, setLiked] = useState(false);
@@ -32,6 +36,7 @@ function Postcard(props) {
   let { likeCount, commentList } = props.postValue;
   let lc = false;
   let user_designation = "";
+
   useEffect(() => {
     setLiked(likeCount.includes(loggedInUser._id));
     if (loggedInUser.following) {
@@ -207,10 +212,20 @@ function Postcard(props) {
       }
     }
   };
+  const sendNotification = (messageDetail) => {
+    if (socket.id) {
+      socket.emit("notify", messageDetail);
+    }
+  };
   const handleFollow = async () => {
     setFollowing(!following);
     try {
       if (!following) {
+        sendNotification({
+          message: loggedInUser.name + " started following you",
+          user: user,
+        });
+
         setLoggedInUser({
           ...loggedInUser,
           following: [...loggedInUser.following, user._id],
@@ -223,6 +238,11 @@ function Postcard(props) {
           return id != loggedInUser._id;
         });
       } else {
+        sendNotification({
+          message: loggedInUser.name + " unfollowed you",
+          user: user,
+        });
+
         const updatedFollowing = loggedInUser.following.filter((id) => {
           return id != user._id;
         });
@@ -241,7 +261,7 @@ function Postcard(props) {
   };
   return (
     <Box>
-      <Box className="postCard" ml={props.isCategory ? "0%" : "83%"}>
+      <Box className="postCard">
         <Box className="postCardHeader">
           <Box style={{ width: "10%" }}>
             <Avatar
@@ -301,7 +321,7 @@ function Postcard(props) {
         </Box>
       </Box>
       <Box>
-        <Box className="commentSection" ml={props.isCategory ? "0%" : "83%"}>
+        <Box className="commentSection">
           {props.type === "/answer" && answerVisibility ? (
             <>
               <Textarea
